@@ -9,14 +9,19 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.comocm.base.extension.setOnSingleClickListener
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ocm.ocmlogger.OCMLogger
+import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
+import kotlinx.android.synthetic.main.activity_base_fragment.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,17 +38,17 @@ open class BaseFragmentActivity: FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        super.setContentView(R.layout.activity_base_fragment)
-//        fragmentContainerId = layoutContainer.id
-//        layoutBack.visibility = View.INVISIBLE
-//        layoutBack.setOnSingleClickListener {
-//            backAction()
-//        }
+        super.setContentView(R.layout.activity_base_fragment)
+        fragmentContainerId = layoutContainer.id
+        ivBack.visibility = View.GONE
+        ivBack.setOnSingleClickListener {
+            backAction()
+        }
 //        tvVersion.setOnMultiClickListener(3) {
 //            showToast(resources.getString(R.string.in_check_upgrade))
 //            UpdateManager.checkUpdate(this, true)
 //        }
-//        tvVersion.text = resources.getString(R.string.app_version, "${BuildConfig.VERSION_NAME}${if (EquipmentManager.isDemo) ".dev" else ""}")
+        tvVersion.text = "v${BuildConfig.VERSION_NAME}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
         setupReceiver()
     }
 
