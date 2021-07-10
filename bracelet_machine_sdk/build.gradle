@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+}
+
+android {
+    compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
+
+    defaultConfig {
+        minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
+        targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION as int
+        versionCode SDK_VERSION_CODE as int
+        versionName SDK_VERSION_NAME
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+//    dokka {
+//        outputFormat = 'html'
+//        outputDirectory = "$buildDir/javadoc"
+//    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android.libraryVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "bmsdk-${SDK_VERSION_NAME}-${SDK_VERSION_CODE}.aar"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation 'cn.shorr:ez-serialport:0.1.0'
+    implementation "com.ocm.lib:floatLoger:1.0.5@aar"
+//    dokkaRuntime "org.jetbrains.dokka:dokka-fatjar:$dokkaVersion"
+}
+
+//apply plugin: 'maven'
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: maven_local_url) {
+//                authentication(userName:maven_local_username ,password: maven_local_password)
+//            }
+//
+//            pom.project {
+//                version SDK_VERSION_NAME
+//                artifactId SDK_NAME
+//                groupId maven_pom_groupid
+//                packaging maven_pom_packaging
+//                description "一厘米科技，智慧前台SDK"
+//            }
+//        }
+//    }
+//    task androidSourcesJar(type: Jar) {
+//        group = 'jar'
+//        classifier = 'sources'
+//        from android.sourceSets.main.java.sourceFiles
+//    }
+//    artifacts {
+//        archives androidSourcesJar
+//    }
+//}
+
+
+//task printVersionName {
+//    doLast {
+//        println "${android.defaultConfig.versionName}(${android.defaultConfig.versionCode})"
+//    }
+//}

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SmartReceptionSDK</string>
+    <string name="cmd_send_fail">指令发送失败</string>
+    <string name="error_robot">设备异常 请联系管理员</string>
+    <string name="error_brand">手环异常请勿使用</string>
+</resources>

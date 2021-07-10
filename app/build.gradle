@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.ren_chaung.easy_bracelet"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
+        targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0.0"
 
@@ -81,5 +81,6 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport_upgrade:1.5.23'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     implementation 'com.tencent.bugly:nativecrashreport:3.7.3' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
-    implementation "com.ocm.lib:ocmlogger:1.1.6"
+    implementation "com.ocm.lib:floatLoger:1.0.5@aar"
+    implementation project(":bracelet_machine_sdk")
 }

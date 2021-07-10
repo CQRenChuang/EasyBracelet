@@ -1,8 +1,8 @@
-package com.comocm.base.extension
+package com.ren_chaung.easy_bracelet.utils.extension
 
 import android.view.View
-import com.comocm.base.listener.OnMultiClickListener
-import com.comocm.base.listener.OnSingleClickListener
+import com.ren_chaung.easy_bracelet.utils.listener.OnMultiClickListener
+import com.ren_chaung.easy_bracelet.utils.listener.OnSingleClickListener
 
 /**
  * 按钮一秒内按多次只响应一次

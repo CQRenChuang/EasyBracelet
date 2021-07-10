@@ -2,7 +2,7 @@ package com.ren_chaung.easy_bracelet
 
 import android.app.Application
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.ocmlogger.OCMLogger
+import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.tencent.bugly.Bugly
 import com.tencent.bugly.beta.Beta
 
@@ -16,7 +16,7 @@ class EBApplication : Application() {
         Beta.autoCheckUpgrade = false
         Beta.initDelay = 0
 //        CrashHandler.getInstance().init(this)
-        OCMLogger.isDebug = true
+        LocalLogger.isDebug = true
 //        BraceletMachineManager.bind(this)
     }
 }

@@ -15,9 +15,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.comocm.base.extension.setOnSingleClickListener
-import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.ocmlogger.OCMLogger
+import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
+import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
@@ -129,7 +128,7 @@ open class BaseFragmentActivity: FragmentActivity() {
         transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out)
         transaction.hide(lastFragment)
         transaction.add(fragmentContainerId, fragment).commitAllowingStateLoss()
-        OCMLogger.write("push(fragment: ${fragment::class.java.simpleName}")
+        LocalLogger.write("push(fragment: ${fragment::class.java.simpleName}")
 //        layoutBack.visibility = if(fragments.size > 1) View.VISIBLE else View.INVISIBLE
     }
 
@@ -151,7 +150,7 @@ open class BaseFragmentActivity: FragmentActivity() {
                 fragments.remove(fragment)
                 fragment.onBack()
                 transaction.remove(fragment)
-                OCMLogger.write("popFragment: ${fragment::class.java.simpleName}")
+                LocalLogger.write("popFragment: ${fragment::class.java.simpleName}")
             }
             if (fragments.size < 2) {
                 break
@@ -164,7 +163,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     protected fun replaceFragment(fragment: Fragment, animateType: FragmentAnimateType) {
         fragments.removeAll { true }
         fragments.add(fragment)
-        OCMLogger.write("replaceFragment: ${fragment::class.java.simpleName}")
+        LocalLogger.write("replaceFragment: ${fragment::class.java.simpleName}")
         val transaction = supportFragmentManager.beginTransaction()
         when(animateType) {
             FragmentAnimateType.FADE ->
