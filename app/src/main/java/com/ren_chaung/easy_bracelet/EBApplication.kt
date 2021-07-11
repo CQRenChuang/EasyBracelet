@@ -12,7 +12,7 @@ import com.tencent.bugly.beta.Beta
 class EBApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Bugly.init(applicationContext, "e6afa835a6", false)
+        Bugly.init(applicationContext, "4a6b142471", false)
         Beta.autoCheckUpgrade = false
         Beta.initDelay = 0
 //        CrashHandler.getInstance().init(this)

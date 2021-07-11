@@ -11,6 +11,10 @@ import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
  */
 open class BaseFragment : Fragment(), BraceletMachineListener {
 
+    fun setTitle(title: String) {
+        (activity as? BaseFragmentActivity)?.title = title
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }

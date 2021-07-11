@@ -9,17 +9,22 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
+import com.comocm.base.extension.showToast
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
+import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
+import com.tencent.bugly.beta.Beta
 import kotlinx.android.synthetic.main.activity_base_fragment.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -35,6 +40,11 @@ open class BaseFragmentActivity: FragmentActivity() {
     private var fragmentContainerId = 0
     private lateinit var receiver: BroadcastReceiver
 
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        tvTitle.text = title
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         super.setContentView(R.layout.activity_base_fragment)
@@ -43,12 +53,25 @@ open class BaseFragmentActivity: FragmentActivity() {
         ivBack.setOnSingleClickListener {
             backAction()
         }
-//        tvVersion.setOnMultiClickListener(3) {
-//            showToast(resources.getString(R.string.in_check_upgrade))
-//            UpdateManager.checkUpdate(this, true)
-//        }
-        tvVersion.text = "v${BuildConfig.VERSION_NAME}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
+        tvVersion.setOnMultiClickListener(3) {
+            showToast("开始检查更新")
+            Beta.checkUpgrade()
+        }
+        val type = if(BraceletMachineManager.isIC()) "IC" else "ID"
+        tvVersion.text = "${type}_v${BuildConfig.VERSION_NAME}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
         setupReceiver()
+        val decorView = window.decorView
+// Hide both the navigation bar and the status bar.
+// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+// a general rule, you should design your app to hide the status bar whenever you
+// hide the navigation bar.
+// Hide both the navigation bar and the status bar.
+// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+// a general rule, you should design your app to hide the status bar whenever you
+// hide the navigation bar.
+        val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        decorView.systemUiVisibility = uiOptions
     }
 
     //保持字体
@@ -109,8 +132,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     }
 
     override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-//        LayoutInflater.from(this).inflate(layoutResID, layoutContainer, true)
+        LayoutInflater.from(this).inflate(layoutResID, layoutContainer, true)
     }
 
     protected fun setFragmentContainer(id: Int) {
@@ -122,14 +144,14 @@ open class BaseFragmentActivity: FragmentActivity() {
         val nowTime = Date().time
         if (nowTime - lastPushTime <= 1000) return
                 lastPushTime = nowTime
-        val lastFragment = fragments[fragments.size-1]
+        val lastFragment = fragments[fragments.size - 1]
         fragments.add(fragment)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out)
         transaction.hide(lastFragment)
         transaction.add(fragmentContainerId, fragment).commitAllowingStateLoss()
         LocalLogger.write("push(fragment: ${fragment::class.java.simpleName}")
-//        layoutBack.visibility = if(fragments.size > 1) View.VISIBLE else View.INVISIBLE
+        ivBack.visibility = if(fragments.size > 1) View.VISIBLE else View.GONE
     }
 
     open fun popFragment() {
@@ -146,7 +168,7 @@ open class BaseFragmentActivity: FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)
         for (i in 1..num) {
-            (fragments.getOrNull(fragments.size-1) as? BaseFragment)?.let { fragment ->
+            (fragments.getOrNull(fragments.size - 1) as? BaseFragment)?.let { fragment ->
                 fragments.remove(fragment)
                 fragment.onBack()
                 transaction.remove(fragment)
@@ -156,8 +178,8 @@ open class BaseFragmentActivity: FragmentActivity() {
                 break
             }
         }
-        transaction.show(fragments[fragments.size-1]).commitAllowingStateLoss()
-//        layoutBack.visibility = if(fragments.size > 1) View.VISIBLE else View.INVISIBLE
+        transaction.show(fragments[fragments.size - 1]).commitAllowingStateLoss()
+        ivBack.visibility = if(fragments.size > 1) View.VISIBLE else View.GONE
     }
 
     protected fun replaceFragment(fragment: Fragment, animateType: FragmentAnimateType) {
@@ -167,11 +189,11 @@ open class BaseFragmentActivity: FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         when(animateType) {
             FragmentAnimateType.FADE ->
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             FragmentAnimateType.SLIDE_LEFT ->
-            transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)
+                transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)
             FragmentAnimateType.SLIDE_RIGHT ->
-            transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out)
+                transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out)
         }
         transaction.replace(fragmentContainerId, fragment).commitAllowingStateLoss()
     }
@@ -198,8 +220,8 @@ open class BaseFragmentActivity: FragmentActivity() {
             return false
         }
         return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) === PackageManager.PERMISSION_GRANTED
     }
 
@@ -213,9 +235,9 @@ open class BaseFragmentActivity: FragmentActivity() {
             return
         }
         if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) !== PackageManager.PERMISSION_GRANTED
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) !== PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 3)
         }

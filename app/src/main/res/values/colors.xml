@@ -11,4 +11,9 @@
     <color name="blue1">#0057F1</color>
     <color name="blue2">#0090FF</color>
     <color name="blue3">#697FDC</color>
+    <color name="blue4">#0091FF</color>
+
+    <color name="text1">#333333</color>
+    <color name="text2">#666666</color>
+    <color name="text3">#999999</color>
 </resources>
