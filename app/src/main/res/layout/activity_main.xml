@@ -17,20 +17,20 @@
         android:background="@mipmap/bg_number"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_width="196dp"
-        android:layout_height="196dp">
+        android:layout_width="164dp"
+        android:layout_height="164dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="剩余手环"
             android:textColor="@color/text3"
-            android:textSize="20sp" />
+            android:textSize="14sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="120"
             android:textColor="@color/blue4"
-            android:textSize="48sp" />
+            android:textSize="32sp" />
     </LinearLayout>
 
 </LinearLayout>

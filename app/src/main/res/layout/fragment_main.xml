@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="40dp"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
+        android:background="@mipmap/bg_pop"
+        android:layout_width="match_parent"
+        android:layout_height="240dp" >
+        <TextView
+            android:text="取手环"
+            android:textSize="48sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/icon_pop"
+            android:layout_width="128dp"
+            android:layout_height="128dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="32dp"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
+        android:background="@mipmap/bg_push"
+        android:layout_width="match_parent"
+        android:layout_height="240dp" >
+        <TextView
+            android:text="还手环"
+            android:textSize="48sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/icon_push"
+            android:layout_width="128dp"
+            android:layout_height="128dp" />
+    </LinearLayout>
 
 </LinearLayout>
