@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.ocm.bracelet_machine_sdk.BraceletMachineListener
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.CheckSelfCallback
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
@@ -25,9 +26,17 @@ class InitFragment(private val listener: InitFragmentListener) : BaseFragment() 
             savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_init, container, false).apply {
-            ivLoading.setOnSingleClickListener {
-                listener.initSuccess()
-            }
+            tvState.text = "开始自检"
+            BraceletMachineManager.checkSelf(object : CheckSelfCallback{
+                override fun onCheckSelfFail(msg: String) {
+                    tvState.text = msg
+                }
+
+                override fun onCheckSelfSuccess() {
+                    tvState.text = "自检成功"
+                    listener.initSuccess()
+                }
+            })
         }
     }
 

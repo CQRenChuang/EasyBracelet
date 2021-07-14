@@ -25,7 +25,7 @@ internal object BraceletNumberManager {
             field = value
             listener?.onCurrentNumChange(value)
         }
-    private var sharedPreferences: SharedPreferences? = null
+    var sharedPreferences: SharedPreferences? = null
     var listener: BraceletNumberManagerListener? = null
     private var isDisableRestart = false
 

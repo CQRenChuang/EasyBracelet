@@ -9,23 +9,23 @@
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="40dp"
-        android:paddingStart="64dp"
-        android:paddingEnd="64dp"
+        android:layout_marginTop="24dp"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
         android:background="@mipmap/bg_pop"
         android:layout_width="match_parent"
-        android:layout_height="240dp" >
+        android:layout_height="200dp" >
         <TextView
             android:text="取手环"
-            android:textSize="48sp"
+            android:textSize="32sp"
             android:layout_weight="1"
             android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <ImageView
             android:src="@mipmap/icon_pop"
-            android:layout_width="128dp"
-            android:layout_height="128dp" />
+            android:layout_width="96dp"
+            android:layout_height="96dp" />
     </LinearLayout>
 
 
@@ -37,18 +37,18 @@
         android:paddingEnd="64dp"
         android:background="@mipmap/bg_push"
         android:layout_width="match_parent"
-        android:layout_height="240dp" >
+        android:layout_height="200dp" >
         <TextView
             android:text="还手环"
-            android:textSize="48sp"
+            android:textSize="32sp"
             android:layout_weight="1"
             android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <ImageView
             android:src="@mipmap/icon_push"
-            android:layout_width="128dp"
-            android:layout_height="128dp" />
+            android:layout_width="96dp"
+            android:layout_height="96dp" />
     </LinearLayout>
 
 </LinearLayout>

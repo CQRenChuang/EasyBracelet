@@ -3,12 +3,17 @@ package com.ren_chaung.easy_bracelet.view.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
 import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
 import com.ren_chaung.easy_bracelet.view.fragment.InitFragment
 import com.ren_chaung.easy_bracelet.view.fragment.MainFragment
+import com.ren_chaung.easy_bracelet.view.fragment.SettingFragment
+import kotlinx.android.synthetic.main.activity_base_fragment.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseFragmentActivity() {
+    private var isInitSuccess = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,6 +24,11 @@ class MainActivity : BaseFragmentActivity() {
                 replaceFragment(MainFragment(), FragmentAnimateType.FADE)
             }
         }), FragmentAnimateType.FADE)
+
+        tvVersion.setOnMultiClickListener(3) {
+            if (!isInitSuccess)return@setOnMultiClickListener
+            push(SettingFragment())
+        }
     }
 
 

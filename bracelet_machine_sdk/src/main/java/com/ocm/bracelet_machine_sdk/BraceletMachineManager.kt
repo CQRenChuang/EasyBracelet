@@ -65,6 +65,13 @@ object BraceletMachineManager: RobotInterface {
         return cardType == CardType.IC
     }
     internal var cardType = CardType.IC
+    private val cardTypeIsIDKey = "cardTypeKey"
+
+    private fun setCardType(type: CardType) {
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(cardTypeIsIDKey, !isIC())
+        }?.apply()
+    }
 
     /**
      * 允许写的扇区
@@ -145,6 +152,10 @@ object BraceletMachineManager: RobotInterface {
     fun bind(context: Context) {
         LocalLogger.isDebug = true
         BraceletNumberManager.loadForSharedPreferences(context)
+        BraceletNumberManager.sharedPreferences?.apply {
+            val isID = getBoolean(cardTypeIsIDKey, false)
+            cardType = if(isID) CardType.ID else CardType.IC
+        }
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
         serialPortHelper?.close()
@@ -187,9 +198,9 @@ object BraceletMachineManager: RobotInterface {
         try {
             FloatLoger.ShowFloat = false
             FloatLoger.setSize(500*1024)
+            FloatLoger.getInstance().clearOutLog(5)
             FloatLoger.getInstance().startServer(context)
             FloatLoger.getInstance().hide()
-            FloatLoger.getInstance().clearOutLog(5)
         }catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -308,13 +319,20 @@ object BraceletMachineManager: RobotInterface {
     /**
      * 自检
      */
-    fun checkSelf(cardType: CardType = CardType.IC, callback: CheckSelfCallback) {
+    fun checkSelf(callback: CheckSelfCallback) {
         if (machineState == MachineState.IN_CHECK_SELF) {
             callback.onCheckSelfFail("正在自检中")
             callback.onCompleted()
             return
         }
-        this.cardType = cardType
+        if (isDebug) {
+            handler.postDelayed({
+                callback.onCheckSelfSuccess()
+                callback.onCompleted()
+
+            }, 1000)
+            return
+        }
         machineState = MachineState.IN_CHECK_SELF
         initProcessor.setCallback(callback)
         handler.postDelayed({

@@ -17,6 +17,7 @@ class EBApplication : Application() {
         Beta.initDelay = 0
 //        CrashHandler.getInstance().init(this)
         LocalLogger.isDebug = true
-//        BraceletMachineManager.bind(this)
+        BraceletMachineManager.bind(this)
+        BraceletMachineManager.isDebug = true
     }
 }

@@ -58,7 +58,7 @@ open class BaseFragmentActivity: FragmentActivity() {
             Beta.checkUpgrade()
         }
         val type = if(BraceletMachineManager.isIC()) "IC" else "ID"
-        tvVersion.text = "${type}_v${BuildConfig.VERSION_NAME}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
+        tvVersion.text = "v${BuildConfig.VERSION_NAME}_${type}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
         setupReceiver()
         val decorView = window.decorView
 // Hide both the navigation bar and the status bar.
