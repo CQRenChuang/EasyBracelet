@@ -20,6 +20,7 @@ class MainFragment : BaseFragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        setTitle(resources.getString(R.string.app_name))
         return inflater.inflate(R.layout.fragment_main, container, false).apply {
 
         }

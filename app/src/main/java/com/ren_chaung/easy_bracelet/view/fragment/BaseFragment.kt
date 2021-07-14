@@ -11,8 +11,11 @@ import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
  */
 open class BaseFragment : Fragment(), BraceletMachineListener {
 
+    private var title: String = ""
+
     fun setTitle(title: String) {
         (activity as? BaseFragmentActivity)?.title = title
+        this.title = title
     }
 
     override fun onAttach(context: Context) {
@@ -25,12 +28,18 @@ open class BaseFragment : Fragment(), BraceletMachineListener {
 
     open fun onBack() {}
 
-    fun push(fragment: Fragment) {
+    open fun onReShow() {
+        (activity as? BaseFragmentActivity)?.title = title
+    }
+
+    fun push(fragment: BaseFragment) {
         (activity as? BaseFragmentActivity)?.push(fragment)
     }
 
     fun popFragment() {
-        (activity as? BaseFragmentActivity)?.popFragment()
+        (activity as? BaseFragmentActivity)?.apply {
+            popFragment()
+        }
     }
 
 

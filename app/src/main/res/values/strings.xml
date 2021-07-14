@@ -1,3 +1,63 @@
 <resources>
     <string name="app_name">简易手环机收发系统</string>
+    <string name="loading">加载中...</string>
+    <string name="circle_wait">识别中</string>
+    <string name="circle_error">错误</string>
+    <string name="init">初始化</string>
+    <string name="app_version">版本号：V%s</string>
+    <string name="device_id">终端ID：%s</string>
+
+    <string name="in_recognition">正在识别，请将脸正对摄像头</string>
+    <string name="scan_qr_tips">正对摄像头放入框内，即可自动扫描</string>
+    <string name="verify_success">验证成功\n正在发放手环…</string>
+    <string name="verify_fail">您已取手环\n请勿重复验证</string>
+    <string name="verify_error">验证失败\n请重新验证</string>
+    <string name="in_verify_card">正在验卡， \n请稍后…</string>
+    <string name="title_activity_backstage">BackstageActivity</string>
+    <string name="exit">再按一次退出程序</string>
+
+    <string name="engin_fail">引擎初始化失败</string>
+    <string name="item_member">%1$s(%2$s %3$s)</string>
+    <string name="remain_number">手环剩余: %1$s</string>
+    <string name="has_min_tips">最小数量限制: %1$s</string>
+    <string name="test_fetch_multiple_bracelet">发多个手环：%1$s</string>
+    <string name="payment_tips">消费金：%1$s元，押金%2$s元\n（还手环以后押金退至零钱）</string>
+    <string name="in_check_upgrade">正在检查更新..</string>
+    <string name="net_bad">网络不稳定</string>
+    <string name="setting">设置</string>
+    <string name="self_inspection_reset">系统自检，请稍后使用\n正在重启...</string>
+    <string name="no_bracelet">没有手环了</string>
+    <string name="manage">管理</string>
+    <string name="under_bracelet">手环数量不足，请联系管理员</string>
+    <string name="get_bracelet_timeout">获取超时\n请联系管理员</string>
+    <string name="bracelet_has_goods">归还失败\n请先取走您的物品\n柜号 %1$s</string>
+    <string name="check_bracelet">检测到手环，正在验证.\n请稍等...</string>
+    <string name="please_input_pwd">请输入密码</string>
+    <string name="pwd_error">密码错误</string>
+
+    <string name="on">开</string>
+    <string name="off">关</string>
+    <string name="test_mode">测试模式：%1$s</string>
+    <string name="no_bracelet_mode">无手环机模式：%1$s</string>
+    <string name="test_bracelet">测试手环设备模式：%1$s</string>
+    <string name="reset_tips">切换后会重启应用，确定切换吗？</string>
+    <string name="sure">确定</string>
+    <string name="press_wrong">按错</string>
+    <string name="auto_fetch_bracelet">自动发手环中</string>
+    <string name="in_preparation">准备中，请稍等..</string>
+    <string name="default_face_lib">默认人脸</string>
+    <string name="bak_face_lib">备用人脸</string>
+    <string name="click_change">%1$s（点击切换）</string>
+    <string name="reset_system_tips">确定重启系统吗？</string>
+    <string name="push_bracelet_done">放置完毕</string>
+    <string name="push_bracelet_tips">请将手环逐个轻放至回收口</string>
+    <string name="push_fail">放置准备失败，请重试</string>
+    <string name="please_set_max">请设置最大容量</string>
+    <string name="please_set_current">请设置当前数量</string>
+    <string name="limit_tips">最大容量不能超过120</string>
+    <string name="more_than_max">当前数量不能大于最大数</string>
+    <string name="please_set_min">请设置最小数量</string>
+    <string name="min_more_than_max">最小数量不能大于最大数</string>
+    <string name="min_more_than_current">最小数量不能大于当前数</string>
+    <string name="home_display_bracelet_number">首页显示手环剩余数：%1$s</string>
 </resources>

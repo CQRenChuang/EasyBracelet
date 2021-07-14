@@ -13,6 +13,7 @@
         android:layout_weight="1"
         tools:context=".view.base.BaseFragmentActivity"/>
     <LinearLayout
+        android:id="@+id/layoutNumber"
         android:layout_gravity="center_horizontal"
         android:background="@mipmap/bg_number"
         android:gravity="center"

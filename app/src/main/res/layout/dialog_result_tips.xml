@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp"
+    android:paddingStart="32dp"
+    android:paddingEnd="32dp"
+    android:background="@drawable/bg_white_radius4"
+    android:gravity="center_horizontal"
+    android:layout_height="wrap_content">
+    <pl.droidsonroids.gif.GifImageView
+            android:layout_width="132dp"
+            android:layout_height="132dp"
+            android:background="@mipmap/gif_dialog_loading"
+            android:id="@+id/ivStatus"
+            />
+    <TextView
+            android:id="@+id/tvState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="验证中"
+            android:textColor="@color/text1"
+            android:textAlignment="center"
+            android:lineSpacingExtra="12dp"
+            android:textSize="22sp"
+            android:layout_marginTop="24dp"
+    />
+    <Button
+            android:layout_marginTop="24dp"
+            android:id="@+id/buttonDone"
+            android:visibility="gone"
+            android:text="完成"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:background="@drawable/bg_blue2_radius4"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

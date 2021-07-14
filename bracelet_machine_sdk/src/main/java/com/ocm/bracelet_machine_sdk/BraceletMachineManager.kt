@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.provider.Settings
+import com.ocm.bracelet_machine_sdk.Machine.RobotData
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
 import com.ocm.bracelet_machine_sdk.processor.*
 import com.ocm.bracelet_machine_sdk.processor.FetchProcessor
@@ -65,11 +66,32 @@ object BraceletMachineManager: RobotInterface {
         return cardType == CardType.IC
     }
     internal var cardType = CardType.IC
+    var enableQRFetch = false
+        private set
+    var enableNFCFetch = false
+        private set
     private val cardTypeIsIDKey = "cardTypeKey"
+    private val enableQRFetchKey = "enableQRFetchKey"
+    private val enableNFCFetchKey = "enableNFCFetchKey"
 
-    private fun setCardType(type: CardType) {
+    fun setCardType(type: CardType) {
+        cardType = type
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putBoolean(cardTypeIsIDKey, !isIC())
+        }?.apply()
+    }
+
+    fun setEnableQRFetch(enable: Boolean) {
+        enableQRFetch = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(enableQRFetchKey, enable)
+        }?.apply()
+    }
+
+    fun setEnableNFCFetch(enable: Boolean) {
+        enableNFCFetch = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(enableNFCFetchKey, enable)
         }?.apply()
     }
 
@@ -155,6 +177,9 @@ object BraceletMachineManager: RobotInterface {
         BraceletNumberManager.sharedPreferences?.apply {
             val isID = getBoolean(cardTypeIsIDKey, false)
             cardType = if(isID) CardType.ID else CardType.IC
+            enableQRFetch = getBoolean(enableQRFetchKey, false)
+            enableNFCFetch = getBoolean(enableNFCFetchKey, false)
+
         }
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
@@ -232,6 +257,16 @@ object BraceletMachineManager: RobotInterface {
             }
         }
         return address ?: Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    }
+
+    /**
+     * 开始转动手环机
+     */
+    fun start() {
+        fetchProcessor.isStop = true
+        LocalLogger.write("开始转动滚筒")
+        serialPortHelper?.SendCmd(RobotData.HOST.START, "")
+        listener?.onStateChange(true)
     }
 
     /**
@@ -439,6 +474,22 @@ object BraceletMachineManager: RobotInterface {
             for (index in 0 until supplement)
                 supplementZero = "${supplementZero}0"
         }
+        if (isDebug) {
+            handler.postDelayed({
+                processDone()
+                callback.onFetchSuccess("1234_$num")
+                BraceletNumberManager.desCurrentNum()
+                if (num > 1) {
+                    callback.onRemainingFetch(num-1)
+                    fetchBracelet(type, num-1, sector, pwd, content, callback)
+                } else {
+                    callback.onCompleted()
+                }
+                callback.onCompleted()
+
+            }, 1000)
+            return
+        }
         fetchProcessor.fetchCount = num
         fetchProcessor.setCallback(callback)
         machineState = MachineState.FETCHING
@@ -624,7 +675,7 @@ object BraceletMachineManager: RobotInterface {
      * 系统放置手环
      */
     fun sysStartPush(listener: BraceletMachineSystemListener) {
-        if (isSyspush) {
+        if (isSyspush || isDebug) {
             listener.onSuccess()
             return
         }
@@ -638,7 +689,7 @@ object BraceletMachineManager: RobotInterface {
      * 系统停止放置手环
      */
     fun sysStopPush(listener: BraceletMachineSystemListener) {
-        if (!isSyspush) {
+        if (!isSyspush || isDebug) {
             listener.onSuccess()
             return
         }

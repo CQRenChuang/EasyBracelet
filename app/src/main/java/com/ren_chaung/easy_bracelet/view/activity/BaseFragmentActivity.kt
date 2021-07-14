@@ -34,7 +34,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     protected enum class FragmentAnimateType {
         FADE, SLIDE_LEFT, SLIDE_RIGHT
     }
-    protected var fragments = ArrayList<Fragment>()
+    val fragments = ArrayList<BaseFragment>()
     private var lastPushTime = 0L
     private var lastPopTime = 0L
     private var fragmentContainerId = 0
@@ -52,10 +52,6 @@ open class BaseFragmentActivity: FragmentActivity() {
         ivBack.visibility = View.GONE
         ivBack.setOnSingleClickListener {
             backAction()
-        }
-        tvVersion.setOnMultiClickListener(3) {
-            showToast("开始检查更新")
-            Beta.checkUpgrade()
         }
         val type = if(BraceletMachineManager.isIC()) "IC" else "ID"
         tvVersion.text = "v${BuildConfig.VERSION_NAME}_${type}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
@@ -140,7 +136,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     }
 
     //fragment 相关
-    open fun push(fragment: Fragment) {
+    open fun push(fragment: BaseFragment) {
         val nowTime = Date().time
         if (nowTime - lastPushTime <= 1000) return
                 lastPushTime = nowTime
@@ -168,7 +164,7 @@ open class BaseFragmentActivity: FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)
         for (i in 1..num) {
-            (fragments.getOrNull(fragments.size - 1) as? BaseFragment)?.let { fragment ->
+            fragments.getOrNull(fragments.size - 1)?.let { fragment ->
                 fragments.remove(fragment)
                 fragment.onBack()
                 transaction.remove(fragment)
@@ -178,11 +174,13 @@ open class BaseFragmentActivity: FragmentActivity() {
                 break
             }
         }
-        transaction.show(fragments[fragments.size - 1]).commitAllowingStateLoss()
+        val showFragment = fragments[fragments.size - 1]
+        showFragment.onReShow()
+        transaction.show(showFragment).commitAllowingStateLoss()
         ivBack.visibility = if(fragments.size > 1) View.VISIBLE else View.GONE
     }
 
-    protected fun replaceFragment(fragment: Fragment, animateType: FragmentAnimateType) {
+    protected fun replaceFragment(fragment: BaseFragment, animateType: FragmentAnimateType) {
         fragments.removeAll { true }
         fragments.add(fragment)
         LocalLogger.write("replaceFragment: ${fragment::class.java.simpleName}")

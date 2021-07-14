@@ -16,4 +16,9 @@
     <color name="text1">#333333</color>
     <color name="text2">#666666</color>
     <color name="text3">#999999</color>
+
+    <color name="black10">#1A000000</color>
+    <color name="white50">#80ffffff</color>
+
+    <color name="bg1">#DCDCDC</color>
 </resources>
