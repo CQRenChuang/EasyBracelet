@@ -51,6 +51,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/checkboxCalc"
+            android:text="收发手环计数    "
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:button="@drawable/checkbox_selector"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <CheckBox
+            android:id="@+id/checkboxAutoRun"
+            android:text="开机自启动"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginStart="40dp"
+            android:button="@drawable/checkbox_selector"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <Button
         android:id="@+id/buttonSetNum"
         android:text="数量配置（Max:120)"

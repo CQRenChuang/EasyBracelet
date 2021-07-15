@@ -70,9 +70,15 @@ object BraceletMachineManager: RobotInterface {
         private set
     var enableNFCFetch = false
         private set
+    var enableCalc = true
+        private set
+    var enableAutoRun = false
+        private set
     private val cardTypeIsIDKey = "cardTypeKey"
     private val enableQRFetchKey = "enableQRFetchKey"
     private val enableNFCFetchKey = "enableNFCFetchKey"
+    private val enableCalcKey = "enableCalcKey"
+    private val enableAutoRunKey = "enableAutoRunKey"
 
     fun setCardType(type: CardType) {
         cardType = type
@@ -92,6 +98,20 @@ object BraceletMachineManager: RobotInterface {
         enableNFCFetch = enable
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putBoolean(enableNFCFetchKey, enable)
+        }?.apply()
+    }
+
+    fun setEnableCalc(enable: Boolean) {
+        enableCalc = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(enableCalcKey, enable)
+        }?.apply()
+    }
+
+    fun setEnableAutoRun(enable: Boolean) {
+        enableAutoRun = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(enableAutoRunKey, enable)
         }?.apply()
     }
 
@@ -167,20 +187,25 @@ object BraceletMachineManager: RobotInterface {
             BraceletNumberManager.currentNum = value
         }
 
-    /**
-     * 绑定context
-     * @param context Context
-     */
-    fun bind(context: Context) {
-        LocalLogger.isDebug = true
+    fun loadData(context: Context) {
         BraceletNumberManager.loadForSharedPreferences(context)
         BraceletNumberManager.sharedPreferences?.apply {
             val isID = getBoolean(cardTypeIsIDKey, false)
             cardType = if(isID) CardType.ID else CardType.IC
             enableQRFetch = getBoolean(enableQRFetchKey, false)
             enableNFCFetch = getBoolean(enableNFCFetchKey, false)
-
+            enableCalc = getBoolean(enableCalcKey, true)
+            enableAutoRun = getBoolean(enableAutoRunKey, false)
         }
+    }
+
+    /**
+     * 绑定context
+     * @param context Context
+     */
+    fun bind(context: Context) {
+        LocalLogger.isDebug = true
+        loadData(context)
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
         serialPortHelper?.close()
@@ -493,7 +518,7 @@ object BraceletMachineManager: RobotInterface {
                 }
                 callback.onCompleted()
 
-            }, 2000)
+            }, 5000)
             return
         }
         fetchProcessor.fetchCount = num

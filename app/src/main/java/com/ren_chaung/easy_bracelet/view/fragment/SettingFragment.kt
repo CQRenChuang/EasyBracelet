@@ -54,7 +54,7 @@ class SettingFragment : BaseFragment() {
                         setPositiveButton("立即重启"
                         ) { dialog, which ->
                             BraceletMachineManager.setCardType(if(position == 0) BraceletMachineManager.CardType.IC else BraceletMachineManager.CardType.ID)
-                            AppHelper.restartApp(context, MainActivity::class.java)
+                            AppHelper.restartApp(context)
                         }
                         setNegativeButton("取消设置") { dialog, which ->
                             spinnerCardType.setSelection(if(BraceletMachineManager.isIC()) 0 else 1)
@@ -80,6 +80,17 @@ class SettingFragment : BaseFragment() {
                 BraceletMachineManager.setEnableNFCFetch(isChecked)
             }
 
+            // 收发手环是否计数
+            checkboxCalc.isChecked = BraceletMachineManager.enableCalc
+            checkboxCalc.setOnCheckedChangeListener { buttonView, isChecked ->
+                BraceletMachineManager.setEnableCalc(isChecked)
+            }
+
+            checkboxAutoRun.isChecked = BraceletMachineManager.enableAutoRun
+            checkboxAutoRun.setOnCheckedChangeListener { buttonView, isChecked ->
+                BraceletMachineManager.setEnableAutoRun(isChecked)
+            }
+
             refreshData(this)
             buttonSetNum.setOnSingleClickListener {
                 SetupNumDialog.create(context).show()
@@ -87,26 +98,26 @@ class SettingFragment : BaseFragment() {
 
             openBack.setOnSingleClickListener {
                 if (isOpenBack) {
-                    BraceletMachineManager.sysStartPush(object : BraceletMachineSystemListener {
+                    BraceletMachineManager.sysStopPush(object : BraceletMachineSystemListener {
                         override fun onSuccess() {
                             openBack.text = "打开回收口"
                             isOpenBack = !isOpenBack
                         }
 
                         override fun onFail() {
-                            context.showToast("打开失败")
+                            context.showToast("关闭失败")
                         }
                     })
 
                 } else {
-                    BraceletMachineManager.sysStopPush(object : BraceletMachineSystemListener {
+                    BraceletMachineManager.sysStartPush(object : BraceletMachineSystemListener {
                         override fun onSuccess() {
                             openBack.text = "关闭回收口"
                             isOpenBack = !isOpenBack
                         }
 
                         override fun onFail() {
-                            context.showToast("关闭失败")
+                            context.showToast("打开失败")
                         }
                     })
                 }

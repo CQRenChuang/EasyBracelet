@@ -41,6 +41,7 @@ internal object BraceletNumberManager {
      * 当前数量加1
      */
     fun addCurrentNum() {
+        if (!BraceletMachineManager.enableCalc) return
         isDisableRestart = false
         currentNum++
     }
@@ -49,6 +50,7 @@ internal object BraceletNumberManager {
      * 当前数量减1
      */
     fun desCurrentNum() {
+        if (!BraceletMachineManager.enableCalc) return
         isDisableRestart = true
         if (currentNum > 0) currentNum--
         isDisableRestart = false

@@ -20,6 +20,6 @@ class EBApplication : Application() {
         LocalLogger.isDebug = true
         SoundHelper.loadSound(this)
         BraceletMachineManager.bind(this)
-        BraceletMachineManager.isDebug = true
+        BraceletMachineManager.isDebug = BuildConfig.DEBUG
     }
 }
