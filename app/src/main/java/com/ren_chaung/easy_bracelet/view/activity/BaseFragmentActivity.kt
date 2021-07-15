@@ -56,18 +56,18 @@ open class BaseFragmentActivity: FragmentActivity() {
         val type = if(BraceletMachineManager.isIC()) "IC" else "ID"
         tvVersion.text = "v${BuildConfig.VERSION_NAME}_${type}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
         setupReceiver()
-        val decorView = window.decorView
-// Hide both the navigation bar and the status bar.
-// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-// a general rule, you should design your app to hide the status bar whenever you
-// hide the navigation bar.
-// Hide both the navigation bar and the status bar.
-// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-// a general rule, you should design your app to hide the status bar whenever you
-// hide the navigation bar.
-        val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
-        decorView.systemUiVisibility = uiOptions
+//        val decorView = window.decorView
+//// Hide both the navigation bar and the status bar.
+//// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+//// a general rule, you should design your app to hide the status bar whenever you
+//// hide the navigation bar.
+//// Hide both the navigation bar and the status bar.
+//// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+//// a general rule, you should design your app to hide the status bar whenever you
+//// hide the navigation bar.
+//        val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+//        decorView.systemUiVisibility = uiOptions
     }
 
     //保持字体

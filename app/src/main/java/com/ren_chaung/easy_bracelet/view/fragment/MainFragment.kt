@@ -24,9 +24,13 @@ class MainFragment : BaseFragment() {
     ): View? {
         setTitle(resources.getString(R.string.app_name))
         return inflater.inflate(R.layout.fragment_main, container, false).apply {
+            layoutFetch.setOnSingleClickListener {
+                push(FetchFragment())
+            }
             layoutGiveBack.setOnSingleClickListener {
                 push(GiveBackFragment())
             }
+            requestFocus()
         }
     }
 

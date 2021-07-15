@@ -7,48 +7,48 @@ import android.view.ViewGroup
 import com.comocm.sound.SoundHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ocm.bracelet_machine_sdk.CheckGiveBackCallback
+import com.ocm.bracelet_machine_sdk.FetchCallback
 import com.ocm.bracelet_machine_sdk.GiveBackCallback
 import com.ocm.bracelet_machine_sdk.Machine.CardDataModel
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.view.dialog.ResultTipsDialog
-import kotlinx.android.synthetic.main.fragment_give_back.view.*
+import kotlinx.android.synthetic.main.fragment_fetch.view.*
 
 /**
  * 基础Fragment，都加上手环机回调监听
  */
-class GiveBackFragment : BaseFragment(), GiveBackCallback {
+class FetchFragment : BaseFragment(), FetchCallback {
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        setTitle("还手环")
-        SoundHelper.reciveTip()
-        return inflater.inflate(R.layout.fragment_give_back, container, false).apply {
-            BraceletMachineManager.giveBackBracelet(this@GiveBackFragment)
+        SoundHelper.beginFetch()
+        return inflater.inflate(R.layout.fragment_fetch, container, false).apply {
+            BraceletMachineManager.fetchBracelet(this@FetchFragment)
         }
+    }
+
+    override fun onBeginFetch() {
+        setTitle("取手环")
     }
 
     override fun onBack() {
-        BraceletMachineManager.stopGiveBack()
+        BraceletMachineManager.stopFetch()
     }
 
-    override fun onGiveBackSuccess(no: String) {
+    override fun onFetchSuccess(no: String) {
         showToast(no)
-        SoundHelper.reciveSuccess()
+        SoundHelper.endFetch()
         popFragment()
     }
 
-    override fun onGiveBackFail(msg: String) {
+    override fun onFetchFail(msg: String) {
+        if (msg.contains("剩余手环")) {
+            SoundHelper.noBrand()
+        }
         context?.let { ResultTipsDialog.Builder(it, ResultTipsDialog.Builder.State.ERROR, msg).create().show{
             popFragment()
         } }
-    }
-
-    override fun onCountDown(countDown: Int) {
-        view?.apply {
-            tvCountDown.visibility = View.VISIBLE
-            tvCountDown.text = countDown.toString()
-        }
     }
 }

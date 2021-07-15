@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:layout_marginBottom="24dp"
+    android:background="@drawable/bg_bg2_radius8"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <pl.droidsonroids.gif.GifImageView
+            android:src="@mipmap/gif_dialog_loading"
+            android:layout_width="120dp"
+            android:layout_height="120dp" />
+        <TextView
+            android:text="手环发放中"
+            android:textColor="@color/text2"
+            android:textSize="20sp"
+            android:layout_marginTop="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</FrameLayout>

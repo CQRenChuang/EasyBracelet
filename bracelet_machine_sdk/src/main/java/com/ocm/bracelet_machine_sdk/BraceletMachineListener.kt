@@ -94,6 +94,7 @@ interface CheckSelfCallback {
  * 获取手环回调
  */
 interface FetchCallback {
+    fun onBeginFetch() {}
     /**
      * 获取手环成功
      * @param no String 对应号码

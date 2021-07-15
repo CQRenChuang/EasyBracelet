@@ -223,8 +223,12 @@ object BraceletMachineManager: RobotInterface {
         try {
             FloatLoger.ShowFloat = false
             FloatLoger.setSize(500*1024)
-            FloatLoger.getInstance().clearOutLog(5)
             FloatLoger.getInstance().startServer(context)
+        }catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        try {
+            FloatLoger.getInstance().clearOutLog(5)
             FloatLoger.getInstance().hide()
         }catch (e: Throwable) {
             e.printStackTrace()
@@ -469,6 +473,7 @@ object BraceletMachineManager: RobotInterface {
             callback.onCompleted()
             return
         }
+        callback.onBeginFetch()
         var supplementZero = ""//不足补零
         if (content.count() < 96) {
             val supplement = 96 - content.count()
@@ -488,7 +493,7 @@ object BraceletMachineManager: RobotInterface {
                 }
                 callback.onCompleted()
 
-            }, 1000)
+            }, 2000)
             return
         }
         fetchProcessor.fetchCount = num
