@@ -16,7 +16,6 @@ internal class InitProcessor: BaseProcessor() {
     private var timeoutTimer: Timer? = null
     private var inInit = false
     var initDone = false
-        private set
     private var equipmentInfoBean: EquipmentInfoBean? = null
     private var cardType = BraceletMachineManager.CardType.IC
     private var listener: com.ocm.bracelet_machine_sdk.CheckSelfCallback? = null

@@ -150,6 +150,8 @@ interface GiveBackCallback {
      * 执行完成
      */
     fun onCompleted() {}
+
+    fun onCountDown(countDown: Int) {}
 }
 
 interface WRGiveBackCallback {

@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
     
     <LinearLayout
+        android:id="@+id/layoutFetch"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginTop="24dp"
@@ -30,6 +31,7 @@
 
 
     <LinearLayout
+        android:id="@+id/layoutGiveBack"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginTop="32dp"

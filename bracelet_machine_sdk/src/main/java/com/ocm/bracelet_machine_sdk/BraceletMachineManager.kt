@@ -273,7 +273,7 @@ object BraceletMachineManager: RobotInterface {
      * 配置归还超时时间
      * @param timeout Long 秒
      */
-    fun setGiveBackTimeout(timeout: Long) {
+    fun setGiveBackTimeout(timeout: Int) {
         givebackProcessor.timeout = timeout
     }
 
@@ -362,6 +362,7 @@ object BraceletMachineManager: RobotInterface {
         }
         if (isDebug) {
             handler.postDelayed({
+                initProcessor.initDone = true
                 callback.onCheckSelfSuccess()
                 callback.onCompleted()
 

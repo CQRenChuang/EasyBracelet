@@ -59,6 +59,7 @@ class ResultTipsDialog private constructor(context: Context, themeStyle: Int) : 
 
     fun dismiss(delay: Long, onDismiss: (()->Unit) = {}) {
         setOnDismissListener {
+            onDismiss()
             timer?.cancel()
             timer = null
         }
@@ -76,7 +77,6 @@ class ResultTipsDialog private constructor(context: Context, themeStyle: Int) : 
                 handler.post {
                     if (isShowing) {
                         dismiss()
-                        onDismiss()
                     }
                 }
             }

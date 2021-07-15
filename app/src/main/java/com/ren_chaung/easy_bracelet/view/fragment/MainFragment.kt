@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import com.ocm.bracelet_machine_sdk.BraceletMachineListener
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
+import kotlinx.android.synthetic.main.fragment_main.view.*
 
 /**
  * 基础Fragment，都加上手环机回调监听
@@ -22,7 +24,9 @@ class MainFragment : BaseFragment() {
     ): View? {
         setTitle(resources.getString(R.string.app_name))
         return inflater.inflate(R.layout.fragment_main, container, false).apply {
-
+            layoutGiveBack.setOnSingleClickListener {
+                push(GiveBackFragment())
+            }
         }
     }
 

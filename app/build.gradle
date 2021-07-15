@@ -83,5 +83,6 @@ dependencies {
     implementation 'com.tencent.bugly:nativecrashreport:3.7.3' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
     implementation "com.ocm.lib:floatLoger:1.0.5@aar"
+    api "com.ocm.lib:sound:0.1.17"
     implementation project(":bracelet_machine_sdk")
 }

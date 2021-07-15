@@ -21,7 +21,7 @@ internal class GiveBackProcessor: BaseProcessor() {
     private var giveBackTimerCount = 0
     private var listener: com.ocm.bracelet_machine_sdk.GiveBackCallback? = null
     val backOpt = OptModel()
-    var timeout = 6L //归还超时限定
+    var timeout = 10 //归还超时限定
 
     fun setCallback(callback: com.ocm.bracelet_machine_sdk.GiveBackCallback) {
         listener = callback
@@ -37,13 +37,15 @@ internal class GiveBackProcessor: BaseProcessor() {
         serialPortHelper?.setReciveNotify(true)
         giveBackTimer = Timer()
         giveBackRollCount = 1
+        var countDown = timeout
+        listener?.onCountDown(countDown)
         giveBackTimer?.schedule(object : TimerTask(){
             override fun run() {
                 if (cardDataModel != null) {
-                    LocalLogger.write("已获得手环信息，等待验证")
+                    LocalLogger.write("giveBackTimer: 已获得手环信息，等待验证")
                     return
                 }
-                if (giveBackTimerCount++ > 0) {
+                if (countDown <= 0) {
                     LocalLogger.write("归还手环超时")
                     //归还手环超时
                     serialPortHelper?.setReciveNotify(false)
@@ -53,13 +55,12 @@ internal class GiveBackProcessor: BaseProcessor() {
                     stop()
                     return
                 }
-                if (giveBackRollCount > 0) {
-                    handler.post {
-                        listener?.onGiveBackBusy()
-                    }
+                countDown -= 1
+                handler.post {
+                    listener?.onCountDown(countDown)
                 }
             }
-        }, (timeout/2)*1000, (timeout/2)*1000)
+        }, 1000, 1000)
         serialPortHelper?.SendCmd(
             RobotData.HOST.RECIVE,
             "01")
