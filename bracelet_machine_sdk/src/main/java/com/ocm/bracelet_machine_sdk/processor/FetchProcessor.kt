@@ -89,21 +89,19 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
             }
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.StartSuccess -> {
                 if (isStopFetch) {
-                    isStopFetch = false
-                    listener?.onStopBack()
+                    stopBack()
                     return
                 }
                 sendFetch()
             }
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.Busy -> {
                 if (isStopFetch) {
-                    isStopFetch = false
-                    listener?.onStopBack()
+                    stopBack()
                     return
                 }
                 timer = timer(initialDelay = 3000, period = 3000) {
                     if (isStop || isStopFetch) {
-                        isStopFetch = false
+                        stopBack()
                         return@timer
                     }
                     sendFetch()
@@ -125,13 +123,22 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         isStopFetch = true
         LocalLogger.write("调用stop停止取手环")
         if (!isSending) {
-            listener?.onStopBack()
+            stopBack()
         }
-        BraceletMachineManager.processDone()
-        listener?.onCompleted()
+    }
+
+    private fun stopBack() {
+        handler.post {
+            LocalLogger.write("调用 stopBack")
+            isStopFetch = false
+            BraceletMachineManager.processDone()
+            listener?.onStopBack()
+            listener?.onCompleted()
+        }
     }
 
     fun destory() {
+        LocalLogger.write("调用 destory")
         timer?.cancel()
         timer = null
         sendTimer?.cancel()
@@ -140,11 +147,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     }
 
     fun fetch(content: String? = null) {
-        if (isStop) {
-            isStop = false
-            BraceletMachineManager.serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.START, "")
-            BraceletMachineManager.listener?.onStateChange(false)
-        }
         isStopFetch = false
         LocalLogger.write("获取手环 , fetchCount： $fetchCount")
         lastContent = content
@@ -155,14 +157,18 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         try {
             isSending = true
             sendTimer = timer(initialDelay = 5000, period = 5000) {
+                if (isStopFetch) {
+                    stopBack()
+                    return@timer
+                }
                 LocalLogger.write("获取手环没有响应，尝试重发： $reSendCount")
                 sendTimer?.cancel()
                 sendTimer = null
                 if(reSendCount > 3) {
                     reSendCount = 0
                     handler.post {
-                        BraceletMachineManager.processDone()
                         listener?.onFetchFail("没有收到响应")
+                        BraceletMachineManager.processDone()
                         listener?.onCompleted()
                     }
                     return@timer
@@ -173,6 +179,7 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
             if (isStop) {
                 isStop = false
                 BraceletMachineManager.serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.START, "")
+                BraceletMachineManager.listener?.onStateChange(false)
             } else {
                 BraceletMachineManager.serialPortHelper?.SendCmd(
                     com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.TAKEBRAND, lastContent ?: "")

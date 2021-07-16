@@ -3,6 +3,9 @@ package com.ren_chaung.easy_bracelet.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.ocm.bracelet_machine_sdk.utils.DateTimeHelper
+import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
+import kotlinx.android.synthetic.main.activity_base_fragment.*
 import java.util.*
 
 
@@ -11,9 +14,9 @@ class TimeTickReceiver: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_TIME_TICK) {
-            val cal = Calendar.getInstance()
-            val hour = cal.get(Calendar.HOUR_OF_DAY)
-            val min = cal.get(Calendar.MINUTE)
+            (context as? BaseFragmentActivity)?.let {
+                it.tvTime.text = DateTimeHelper.getTime()
+            }
         }
     }
 }

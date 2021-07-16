@@ -18,9 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.comocm.base.extension.showToast
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.utils.DateTimeHelper
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.receiver.TimeTickReceiver
 import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
@@ -39,6 +41,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     private var lastPopTime = 0L
     private var fragmentContainerId = 0
     private lateinit var receiver: BroadcastReceiver
+    private val timeTickReceiver = TimeTickReceiver()
 
     override fun setTitle(title: CharSequence?) {
         super.setTitle(title)
@@ -55,6 +58,7 @@ open class BaseFragmentActivity: FragmentActivity() {
         }
         val type = if(BraceletMachineManager.isIC()) "IC" else "ID"
         tvVersion.text = "v${BuildConfig.VERSION_NAME}_${type}"//resources.getString(R.string.app_version, "${}${if (EquipmentManager.isDemo) ".dev" else ""}")
+        tvTime.text = DateTimeHelper.getTime()
         setupReceiver()
 //        val decorView = window.decorView
 //// Hide both the navigation bar and the status bar.
@@ -101,6 +105,9 @@ open class BaseFragmentActivity: FragmentActivity() {
         }
         val intentFilter = IntentFilter()
         registerReceiver(receiver, intentFilter)
+        val timeFilter = IntentFilter()
+        timeFilter.addAction(Intent.ACTION_TIME_TICK)
+        registerReceiver(timeTickReceiver, timeFilter)
     }
 
     open fun backAction() {
@@ -124,6 +131,7 @@ open class BaseFragmentActivity: FragmentActivity() {
 
     override fun onDestroy() {
         unregisterReceiver(receiver)
+        unregisterReceiver(timeTickReceiver)
         super.onDestroy()
     }
 
