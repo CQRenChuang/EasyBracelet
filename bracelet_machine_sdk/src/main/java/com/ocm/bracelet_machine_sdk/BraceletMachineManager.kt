@@ -408,6 +408,7 @@ object BraceletMachineManager: RobotInterface {
 
     //操作处理结束
     internal fun processDone() {
+        fetchProcessor.destory()
         machineState = MachineState.IDLE
     }
 
@@ -508,7 +509,7 @@ object BraceletMachineManager: RobotInterface {
         if (isDebug) {
             handler.postDelayed({
                 processDone()
-                callback.onFetchSuccess("1234_$num")
+                callback.onFetchSuccess("1234_$num", "hex1234")
                 BraceletNumberManager.desCurrentNum()
                 if (num > 1) {
                     callback.onRemainingFetch(num-1)

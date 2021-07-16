@@ -2,6 +2,7 @@ package com.ocm.bracelet_machine_sdk.Machine;
 
 public class CardDataModel {
     public String CardNo;      //卡号
+    public String cardNoHex;      //卡号
     public String CabinetNos; //柜号
     public boolean UsbCabine = false;
     public byte[] DataBuff; //柜号

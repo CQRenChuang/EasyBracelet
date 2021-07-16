@@ -33,8 +33,8 @@ class GiveBackFragment : BaseFragment(), GiveBackCallback {
         BraceletMachineManager.stopGiveBack()
     }
 
-    override fun onGiveBackSuccess(no: String) {
-        showToast(no)
+    override fun onGiveBackSuccess(no: String, hexNo: String) {
+        showToast("$no\n$hexNo")
         SoundHelper.reciveSuccess()
         popFragment()
     }

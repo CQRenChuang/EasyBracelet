@@ -35,6 +35,10 @@ open class BaseFragment : Fragment(), BraceletMachineListener {
 
     open fun onBack() {}
 
+    open fun canGoBack(): Boolean {
+        return true
+    }
+
     open fun onReShow() {
         (activity as? BaseFragmentActivity)?.title = title
     }

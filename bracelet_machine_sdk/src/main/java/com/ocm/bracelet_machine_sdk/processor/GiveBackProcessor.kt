@@ -140,7 +140,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 serialPortHelper?.setReciveNotify(false)
                 BraceletNumberManager.addCurrentNum()
                 cardDataModel?.let { card ->
-                    listener?.onGiveBackSuccess(card.CardNo)
+                    listener?.onGiveBackSuccess(card.CardNo, card.cardNoHex)
                 }
                 stop()
             }

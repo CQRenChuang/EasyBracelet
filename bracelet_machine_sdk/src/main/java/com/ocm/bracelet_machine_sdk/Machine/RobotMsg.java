@@ -15,6 +15,7 @@ public enum RobotMsg {
     ReciveSendFail,
     ReciveFail,
     Success,
+    StartSuccess,
     Fail,
     Busy,
     RobotStatusChange,

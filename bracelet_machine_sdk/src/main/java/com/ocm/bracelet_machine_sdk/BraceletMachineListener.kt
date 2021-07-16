@@ -99,7 +99,7 @@ interface FetchCallback {
      * 获取手环成功
      * @param no String 对应号码
      */
-    fun onFetchSuccess(no: String) {}
+    fun onFetchSuccess(no: String, hexNo: String) {}
 
     /**
      * 取多个手环时还剩余要取几个
@@ -117,6 +117,11 @@ interface FetchCallback {
      * 执行完成
      */
     fun onCompleted() {}
+
+    /**
+     * 停止返回
+     */
+    fun onStopBack() {}
 }
 
 /**
@@ -139,7 +144,7 @@ interface GiveBackCallback {
      * 还手环成功
      * @param no String 手环号
      */
-    fun onGiveBackSuccess(no: String) {}
+    fun onGiveBackSuccess(no: String, hexNo: String) {}
 
     /**
      * 还手环失败

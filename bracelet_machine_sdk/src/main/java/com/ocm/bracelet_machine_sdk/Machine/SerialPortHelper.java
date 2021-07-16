@@ -192,10 +192,11 @@ public class SerialPortHelper {
             lastRecevConfirmTime = System.currentTimeMillis();
             String tmp = buffStr.replace(" ","").substring(8,16);
             if(BraceletMachineManager.INSTANCE.isIC())tmp = convertCardNo(tmp);
+            String cardnoHex = tmp;
             String cardno = String.valueOf(Long.parseLong(tmp,16));
             while(cardno.length()<10)
                 cardno ="0"+cardno;
-            writeLog("收到手环:"+cardno+",最后发送的指令:"+StringHelper.bytesToHexFun3(lastSendCmd));
+            writeLog("收到手环:"+cardno+", hex: "+ cardnoHex +"最后发送的指令:"+StringHelper.bytesToHexFun3(lastSendCmd));
             if(robotRecvEqual(buff,RobotData.ROBOT.CARDNOSECTOR)){
                 //块数据拼装
                 byte[] blockData = new byte[16];
@@ -207,6 +208,7 @@ public class SerialPortHelper {
                     e.printStackTrace();
                 }
                 CardDataModel data = new CardDataModel(cardno,RobotData.getCabinetRecord(blockData),RobotData.UseCabinet(blockData), sectorData);
+                data.cardNoHex = cardnoHex;
                 if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.TAKEBRAND)){
                     //发手环
                     Log.i(TAG,"发手环："+data.CardNo+",柜号:"+data.CabinetNos);
@@ -219,6 +221,7 @@ public class SerialPortHelper {
                 }
             }else {
                 CardDataModel cardnodata = new CardDataModel(cardno,"0,0,0,0",false);
+                cardnodata.cardNoHex = cardnoHex;
                 if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.TAKEBRAND)){
                     //发手环
                     robotLisenter.OnMsg(RobotMsg.GetSuccess,cardnodata);
@@ -261,6 +264,8 @@ public class SerialPortHelper {
 //            RoadRoller();
         }else if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.TEST)){
             msg = RobotMsg.Success;
+        } else if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.START)){
+            msg = RobotMsg.StartSuccess;
         }
         Log.i(TAG,"成功处理:"+msg);
         if(msg!=null)robotLisenter.OnMsg(msg,"");

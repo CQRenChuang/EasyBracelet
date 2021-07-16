@@ -93,8 +93,11 @@ class MainActivity : BaseFragmentActivity() {
         } catch (e: Throwable) {
             e.printStackTrace()
         }
-        BraceletMachineManager.onDestroy()
-        NFCHelper.closeZHRFID()
+        try {
+            NFCHelper.closeZHRFID()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
         super.onDestroy()
     }
 

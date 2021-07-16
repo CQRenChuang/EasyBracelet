@@ -19,6 +19,8 @@ import kotlinx.android.synthetic.main.fragment_fetch.view.*
  */
 class FetchFragment : BaseFragment(), FetchCallback {
 
+    private var canGoBack = false
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -33,22 +35,35 @@ class FetchFragment : BaseFragment(), FetchCallback {
         setTitle("取手环")
     }
 
-    override fun onBack() {
-        BraceletMachineManager.stopFetch()
+    override fun canGoBack(): Boolean {
+        if (!canGoBack) {
+            showToast("操作中断中，即将返回")
+            BraceletMachineManager.stopFetch()
+        }
+        return canGoBack
     }
 
-    override fun onFetchSuccess(no: String) {
-        showToast(no)
+    override fun onFetchSuccess(no: String, hexNo: String) {
+        showToast("$no\n$hexNo")
         SoundHelper.endFetch()
+        canGoBack = true
         popFragment()
     }
 
     override fun onFetchFail(msg: String) {
         if (msg.contains("剩余手环")) {
             SoundHelper.noBrand()
+        } else if(msg.contains("手环异常")) {
+            SoundHelper.exceptionCard()
         }
         context?.let { ResultTipsDialog.Builder(it, ResultTipsDialog.Builder.State.ERROR, msg).create().show{
+            canGoBack = true
             popFragment()
         } }
+    }
+
+    override fun onStopBack() {
+        canGoBack = true
+        popFragment()
     }
 }

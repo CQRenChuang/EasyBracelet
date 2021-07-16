@@ -165,6 +165,7 @@ open class BaseFragmentActivity: FragmentActivity() {
         transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)
         for (i in 1..num) {
             fragments.getOrNull(fragments.size - 1)?.let { fragment ->
+                if (!fragment.canGoBack()) return
                 fragments.remove(fragment)
                 fragment.onBack()
                 transaction.remove(fragment)
