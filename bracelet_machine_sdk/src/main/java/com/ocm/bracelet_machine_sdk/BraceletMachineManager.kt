@@ -231,10 +231,6 @@ object BraceletMachineManager: RobotInterface {
             }
 
             override fun onNeedRestart() {
-                if (!fetchProcessor.isStop) return
-                fetchProcessor.isStop = false
-                listener?.onStateChange(false)
-                serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.START, "")
             }
         }
         setupRobotListener()

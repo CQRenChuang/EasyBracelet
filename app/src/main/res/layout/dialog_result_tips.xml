@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="320dp"
+    android:layout_width="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:minWidth="320dp"
     android:paddingTop="40dp"
     android:paddingBottom="40dp"
     android:paddingStart="32dp"
@@ -27,19 +28,32 @@
             android:textSize="22sp"
             android:layout_marginTop="24dp"
     />
-    <Button
-            android:layout_marginTop="24dp"
-            android:id="@+id/buttonDone"
+
+    <LinearLayout
+        android:id="@+id/layoutButton"
+        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
             android:visibility="gone"
+            android:id="@+id/buttonCancel"
+            android:text="取消"
+            android:textColor="@color/text2"
+            android:textSize="18sp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/bg_white_text3_border_radius8"
+            android:layout_width="168dp"
+            android:layout_height="56dp"/>
+
+        <Button
+            android:id="@+id/buttonDone"
             android:text="完成"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:background="@drawable/bg_blue2_radius4"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+            android:background="@drawable/bg_blue2_radius8"
+            android:layout_width="168dp"
+            android:layout_height="56dp"/>
+    </LinearLayout>
 </LinearLayout>

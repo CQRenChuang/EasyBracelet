@@ -79,7 +79,8 @@ class SetupNumDialog private constructor(context: Context, themeStyle: Int) : Di
                     }
                     BraceletMachineManager.maxBracelet = max
                     BraceletMachineManager.currentBracelet = current
-                    BraceletMachineManager.start()
+                    if (current > 0)
+                        BraceletMachineManager.start()
                     dismiss()
                 }
                 //禁止点击Dialog以外的区域时Dialog消失

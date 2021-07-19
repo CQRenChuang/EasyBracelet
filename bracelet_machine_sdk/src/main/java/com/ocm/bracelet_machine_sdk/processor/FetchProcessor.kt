@@ -21,7 +21,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     private var timer: Timer? = null
     private var isSending = false
     private var sendTimer: Timer? = null
-    private var reSendCount = 0
 
     /**
      * 是否停止转动
@@ -29,6 +28,9 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     var isStop = false
 
     override fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
+        if(BraceletMachineManager.machineState != BraceletMachineManager.MachineState.FETCHING) {
+            return
+        }
         isSending = false
         sendTimer?.cancel()
         sendTimer = null
@@ -131,8 +133,8 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         handler.post {
             LocalLogger.write("调用 stopBack")
             isStopFetch = false
-            BraceletMachineManager.processDone()
             listener?.onStopBack()
+            BraceletMachineManager.processDone()
             listener?.onCompleted()
         }
     }
@@ -143,7 +145,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         timer = null
         sendTimer?.cancel()
         sendTimer = null
-        reSendCount = 0
     }
 
     fun fetch(content: String? = null) {
@@ -156,25 +157,12 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     private fun sendFetch() {
         try {
             isSending = true
-            sendTimer = timer(initialDelay = 5000, period = 5000) {
-                if (isStopFetch) {
-                    stopBack()
-                    return@timer
-                }
-                LocalLogger.write("获取手环没有响应，尝试重发： $reSendCount")
+            sendTimer = timer(initialDelay = 20000, period = 20000) {
                 sendTimer?.cancel()
                 sendTimer = null
-                if(reSendCount > 3) {
-                    reSendCount = 0
-                    handler.post {
-                        listener?.onFetchFail("没有收到响应")
-                        BraceletMachineManager.processDone()
-                        listener?.onCompleted()
-                    }
-                    return@timer
+                handler.post {
+                    listener?.onReceiveTimeout()
                 }
-                reSendCount += 1
-                sendFetch()
             }
             if (isStop) {
                 isStop = false

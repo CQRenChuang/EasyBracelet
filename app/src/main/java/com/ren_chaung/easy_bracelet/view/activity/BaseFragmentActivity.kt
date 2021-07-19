@@ -167,7 +167,7 @@ open class BaseFragmentActivity: FragmentActivity() {
             return
         }
         val nowTime = Date().time
-        if (nowTime - lastPopTime <= 1000) return
+//        if (nowTime - lastPopTime <= 1000) return
         lastPopTime = nowTime
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out)

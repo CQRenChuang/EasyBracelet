@@ -81,6 +81,10 @@ internal class GiveBackProcessor: BaseProcessor() {
     }
 
     override fun OnMsg(msg: RobotMsg?, data: Any?) {
+        if (BraceletMachineManager.machineState != BraceletMachineManager.MachineState.IN_GIVE_BACK &&
+                BraceletMachineManager.machineState != BraceletMachineManager.MachineState.IN_SINGLE_GIVE_BACK) {
+            return
+        }
         if (msg == null) {
             giveBackRollCount = 0
             if (cardDataModel != null) {

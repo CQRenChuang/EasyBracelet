@@ -10,8 +10,11 @@ import com.ocm.bracelet_machine_sdk.CheckGiveBackCallback
 import com.ocm.bracelet_machine_sdk.FetchCallback
 import com.ocm.bracelet_machine_sdk.GiveBackCallback
 import com.ocm.bracelet_machine_sdk.Machine.CardDataModel
+import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.dialog.ResultTipsDialog
+import kotlinx.android.synthetic.main.dialog_result_tips.*
 import kotlinx.android.synthetic.main.fragment_fetch.view.*
 
 /**
@@ -65,5 +68,21 @@ class FetchFragment : BaseFragment(), FetchCallback {
     override fun onStopBack() {
         canGoBack = true
         popFragment()
+    }
+
+    override fun onReceiveTimeout() {
+        context?.let {
+            ResultTipsDialog.Builder(it, ResultTipsDialog.Builder.State.FAIL, "无响应，请重试").create().apply {
+                buttonCancel.visibility = View.VISIBLE
+                buttonCancel.setOnSingleClickListener {
+                    dismiss()
+                    onStopBack()
+                }
+                buttonDone.setOnSingleClickListener {
+                    dismiss()
+                    BraceletMachineManager.fetchBracelet(this@FetchFragment)
+                }
+            }.show()
+        }
     }
 }

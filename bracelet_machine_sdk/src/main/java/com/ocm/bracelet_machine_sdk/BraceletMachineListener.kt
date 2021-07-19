@@ -122,6 +122,11 @@ interface FetchCallback {
      * 停止返回
      */
     fun onStopBack() {}
+
+    /**
+     * 接收超时
+     */
+    fun onReceiveTimeout() {}
 }
 
 /**
