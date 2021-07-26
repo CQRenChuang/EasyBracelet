@@ -123,7 +123,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         timer?.cancel()
         timer = null
         isStopFetch = true
-        LocalLogger.write("调用stop停止取手环")
         if (!isSending) {
             stopBack()
         }
@@ -131,7 +130,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
 
     private fun stopBack() {
         handler.post {
-            LocalLogger.write("调用 stopBack")
             isStopFetch = false
             listener?.onStopBack()
             BraceletMachineManager.processDone()
@@ -140,7 +138,6 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     }
 
     fun destory() {
-        LocalLogger.write("调用 destory")
         timer?.cancel()
         timer = null
         sendTimer?.cancel()
@@ -157,10 +154,11 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     private fun sendFetch() {
         try {
             isSending = true
-            sendTimer = timer(initialDelay = 20000, period = 20000) {
+            sendTimer = timer(initialDelay = 25000, period = 25000) {
                 sendTimer?.cancel()
                 sendTimer = null
                 handler.post {
+                    BraceletMachineManager.processDone()
                     listener?.onReceiveTimeout()
                 }
             }

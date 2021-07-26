@@ -163,6 +163,8 @@ interface GiveBackCallback {
     fun onCompleted() {}
 
     fun onCountDown(countDown: Int) {}
+
+    fun onStopBack(){}
 }
 
 interface WRGiveBackCallback {

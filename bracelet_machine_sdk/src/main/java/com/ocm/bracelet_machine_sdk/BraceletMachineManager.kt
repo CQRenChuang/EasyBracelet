@@ -404,8 +404,13 @@ object BraceletMachineManager: RobotInterface {
 
     //操作处理结束
     internal fun processDone() {
+        LocalLogger.write("状态重置")
         fetchProcessor.destory()
         machineState = MachineState.IDLE
+    }
+
+    fun destoryGiveBack() {
+        singleGiveBackProcessor.destory()
     }
 
     /**
@@ -603,6 +608,7 @@ object BraceletMachineManager: RobotInterface {
      */
     fun stopGiveBack() {
         givebackProcessor.stop()
+        processDone()
     }
 
     /**

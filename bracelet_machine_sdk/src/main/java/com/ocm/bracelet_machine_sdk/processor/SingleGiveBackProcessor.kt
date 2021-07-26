@@ -63,20 +63,26 @@ internal class SingleGiveBackProcessor: BaseProcessor() {
         listener?.onCompleted()
     }
 
+    fun destory() {
+        callback = null
+        listener = null
+    }
+
     override fun OnMsg(msg: RobotMsg?, data: Any?) {
         if (msg == null) {
             handler.post {
+                BraceletMachineManager.processDone()
                 listener?.onGiveBackFail("未读取到数据")
                 listener?.onCompleted()
                 callback?.onFail("未读取到数据")
                 callback?.onCompleted()
-                BraceletMachineManager.processDone()
             }
             return
         }
         when(msg) {
             RobotMsg.ReciveWait -> {
                 handler.post {
+                    BraceletMachineManager.processDone()
                     if (data is CardDataModel) {
                         listener?.onSuccess(data)
                         Log.e("data", data.toString())
@@ -84,15 +90,14 @@ internal class SingleGiveBackProcessor: BaseProcessor() {
                         listener?.onGiveBackFail("数据类型有误")
                     }
                     listener?.onCompleted()
-                    BraceletMachineManager.processDone()
                 }
             }
             RobotMsg.ReciveSuccess -> {
                 serialPortHelper?.setReciveNotify(false)
+                BraceletMachineManager.processDone()
                 BraceletNumberManager.addCurrentNum()
                 callback?.onSuccess()
                 callback?.onCompleted()
-                BraceletMachineManager.processDone()
                 stop()
             }
             RobotMsg.ReciveSendRoll -> {
@@ -100,11 +105,11 @@ internal class SingleGiveBackProcessor: BaseProcessor() {
             RobotMsg.ReciveFail -> {
                 serialPortHelper?.setReciveNotify(false)
                 handler.post {
+                    BraceletMachineManager.processDone()
                     listener?.onGiveBackFail("归还失败")
                     listener?.onCompleted()
                     callback?.onFail("归还失败")
                     callback?.onCompleted()
-                    BraceletMachineManager.processDone()
                 }
                 stop()
             }

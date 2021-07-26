@@ -22,6 +22,8 @@ internal class GiveBackProcessor: BaseProcessor() {
     private var listener: com.ocm.bracelet_machine_sdk.GiveBackCallback? = null
     val backOpt = OptModel()
     var timeout = 10 //归还超时限定
+    private var isSending = false
+    private var isStop = false
 
     fun setCallback(callback: com.ocm.bracelet_machine_sdk.GiveBackCallback) {
         listener = callback
@@ -41,10 +43,10 @@ internal class GiveBackProcessor: BaseProcessor() {
         listener?.onCountDown(countDown)
         giveBackTimer?.schedule(object : TimerTask(){
             override fun run() {
-                if (cardDataModel != null) {
-                    LocalLogger.write("giveBackTimer: 已获得手环信息，等待验证")
-                    return
-                }
+//                if (cardDataModel != null) {
+//                    LocalLogger.write("giveBackTimer: 已获得手环信息，等待验证")
+//                    return
+//                }
                 if (countDown <= 0) {
                     LocalLogger.write("归还手环超时")
                     //归还手环超时
@@ -52,7 +54,8 @@ internal class GiveBackProcessor: BaseProcessor() {
                     handler.post {
                         listener?.onGiveBackFail("归还超时")
                     }
-                    stop()
+                    isSending = false
+                    stopBack()
                     return
                 }
                 countDown -= 1
@@ -61,6 +64,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 }
             }
         }, 1000, 1000)
+        isSending = true
         serialPortHelper?.SendCmd(
             RobotData.HOST.RECIVE,
             "01")
@@ -70,14 +74,25 @@ internal class GiveBackProcessor: BaseProcessor() {
      * 主动停止还手环
      */
     fun stop() {
-        LocalLogger.write("停止还手环")
-        giveBackRollCount = 0
-        giveBackTimerCount = 0
-        giveBackTimer?.cancel()
-        giveBackTimer = null
-        cardDataModel = null
-        BraceletMachineManager.processDone()
-        listener?.onCompleted()
+        isStop = true
+        if (!isSending) {
+            stopBack()
+        }
+    }
+
+    private fun stopBack() {
+        handler.post {
+            LocalLogger.write("调用 stopBack")
+            giveBackRollCount = 0
+            giveBackTimerCount = 0
+            isStop = false
+            giveBackTimer?.cancel()
+            giveBackTimer = null
+            cardDataModel = null
+            listener?.onStopBack()
+            BraceletMachineManager.processDone()
+            listener?.onCompleted()
+        }
     }
 
     override fun OnMsg(msg: RobotMsg?, data: Any?) {
@@ -86,6 +101,7 @@ internal class GiveBackProcessor: BaseProcessor() {
             return
         }
         if (msg == null) {
+            isSending = true
             giveBackRollCount = 0
             if (cardDataModel != null) {
 //                handler.postDelayed({
@@ -102,11 +118,17 @@ internal class GiveBackProcessor: BaseProcessor() {
             }
             return
         }
+        isSending = false
         when(msg) {
             RobotMsg.ReciveWait -> {
+                if (isStop) {
+                    stopBack()
+                    return
+                }
                 giveBackRollCount = 0
                 (data as? CardDataModel)?.let { card ->
                     if (cardDataModel != null) {
+                        isSending = true
                         serialPortHelper?.simpleSendCmd(RobotData.HOST.RECIVENABLE, "")
                         return@let
                     }
@@ -119,6 +141,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                                 giveBackTimer = null
                                 if (checkResult) {
                                     handler.postDelayed({
+                                        isSending = true
                                         if (backOpt.type == "03")
                                             serialPortHelper?.simpleSendCmd(RobotData.HOST.RECIVE, "${backOpt.type}${backOpt.key}${backOpt.pwd}${backOpt.sectorContent}")
                                         else {
@@ -146,7 +169,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 cardDataModel?.let { card ->
                     listener?.onGiveBackSuccess(card.CardNo, card.cardNoHex)
                 }
-                stop()
+                stopBack()
             }
             RobotMsg.ReciveSendRoll -> {
                 giveBackRollCount = 0
@@ -156,7 +179,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 handler.post {
                     listener?.onGiveBackFail("归还失败")
                 }
-                stop()
+                stopBack()
             }
             else -> return
         }

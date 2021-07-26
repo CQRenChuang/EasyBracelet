@@ -32,7 +32,6 @@
     </LinearLayout>
     <TextView
         android:id="@+id/tvCountDown"
-        android:visibility="gone"
         android:text="10"
         android:layout_marginTop="16dp"
         android:layout_gravity="end"

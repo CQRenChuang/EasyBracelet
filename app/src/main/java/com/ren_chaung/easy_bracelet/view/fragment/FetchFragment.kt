@@ -78,6 +78,7 @@ class FetchFragment : BaseFragment(), FetchCallback {
                     dismiss()
                     onStopBack()
                 }
+                buttonDone.text = "重试"
                 buttonDone.setOnSingleClickListener {
                     dismiss()
                     BraceletMachineManager.fetchBracelet(this@FetchFragment)
