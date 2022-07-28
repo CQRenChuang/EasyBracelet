@@ -3,7 +3,7 @@ package com.ren_chaung.easy_bracelet.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.ocm.bracelet_machine_sdk.utils.DateTimeHelper
+import com.ren_chaung.easy_bracelet.utils.DateTimeHelper
 import com.ren_chaung.easy_bracelet.view.activity.BaseFragmentActivity
 import kotlinx.android.synthetic.main.activity_base_fragment.*
 import java.util.*

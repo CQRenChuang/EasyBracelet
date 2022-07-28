@@ -5,8 +5,8 @@ import android.content.Context
 import android.os.Handler
 import android.view.View
 import android.view.WindowManager
-import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import kotlinx.android.synthetic.main.dialog_result_tips.*
 import java.util.*

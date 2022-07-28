@@ -1,12 +1,18 @@
 package com.example.zh_idreader;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.util.Arrays;
 
 public class IDReader {
     static {
-        System.loadLibrary("RfidDevCtl");
+        if (Build.BRAND.toLowerCase().contains("renchuang")) {
+            System.loadLibrary("RfidDevCtl_rc");
+
+        } else {
+            System.loadLibrary("RfidDevCtl");
+        }
     }
 
     private static final String TAG = "jniNfcDev";

@@ -60,4 +60,6 @@
     <string name="min_more_than_max">最小数量不能大于最大数</string>
     <string name="min_more_than_current">最小数量不能大于当前数</string>
     <string name="home_display_bracelet_number">首页显示手环剩余数：%1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

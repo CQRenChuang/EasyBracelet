@@ -3,8 +3,8 @@ package com.ren_chaung.easy_bracelet
 import android.app.Application
 import com.comocm.sound.SoundHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.utils.CrashHandler
+import com.ren_chaung.easy_bracelet.utils.LocalLogger
 import com.tencent.bugly.Bugly
 import com.tencent.bugly.beta.Beta
 

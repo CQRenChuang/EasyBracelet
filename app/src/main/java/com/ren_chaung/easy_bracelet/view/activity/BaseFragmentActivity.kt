@@ -18,11 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.comocm.base.extension.showToast
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.bracelet_machine_sdk.utils.DateTimeHelper
-import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.receiver.TimeTickReceiver
+import com.ren_chaung.easy_bracelet.utils.DateTimeHelper
+import com.ren_chaung.easy_bracelet.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
@@ -124,9 +124,9 @@ open class BaseFragmentActivity: FragmentActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (!checkPermission()) {
-            requestPermission()
-        }
+//        if (!checkPermission()) {
+//            requestPermission()
+//        }
     }
 
     override fun onDestroy() {
@@ -220,6 +220,7 @@ open class BaseFragmentActivity: FragmentActivity() {
 
     //权限
     fun checkPermission(): Boolean {
+        return true
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED) {
             return false
         }

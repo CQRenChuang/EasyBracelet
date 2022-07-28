@@ -6,11 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.comocm.sound.SoundHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.bracelet_machine_sdk.CheckGiveBackCallback
 import com.ocm.bracelet_machine_sdk.FetchCallback
-import com.ocm.bracelet_machine_sdk.GiveBackCallback
-import com.ocm.bracelet_machine_sdk.Machine.CardDataModel
-import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.dialog.ResultTipsDialog

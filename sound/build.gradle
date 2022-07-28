@@ -31,7 +31,7 @@ dependencies {
 
 //    implementation project(":${BASE_NAME}")
 //    implementation project(":${LOG_NAME}")
-    implementation "com.ocm.lib:ocmlogger:1.1.6@aar"
+    implementation "com.ocm.lib:ocmlogger:1.0.3@aar"
 }
 
 

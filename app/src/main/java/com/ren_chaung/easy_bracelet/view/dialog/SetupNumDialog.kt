@@ -7,8 +7,8 @@ import android.view.View
 import android.view.WindowManager
 import com.comocm.base.extension.showToast
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.R
+import com.ren_chaung.easy_bracelet.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import kotlinx.android.synthetic.main.dialog_setup_num.*
 

@@ -8,8 +8,6 @@ import android.os.Handler
 import android.util.Log
 import com.example.zh_idreader.IDReader
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.bracelet_machine_sdk.utils.StringHelper
-import com.ocm.ocmlogger.OCMLogger
 import kotlin.collections.ArrayList
 
 object NFCHelper {

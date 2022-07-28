@@ -11,7 +11,6 @@ import com.comocm.base.extension.showToast
 import com.comocm.sound.SoundHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineListener
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
-import com.ocm.ocmlogger.OCMLogger
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.NFCHelper
 import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
@@ -38,7 +37,7 @@ class MainActivity : BaseFragmentActivity() {
         setContentView(R.layout.activity_main)
         setFragmentContainer(layoutMainContainer.id)
         title = getString(R.string.app_name)
-        replaceFragment(InitFragment(object : InitFragment.InitFragmentListener {
+        replaceFragment(InitFragment.newInstance(object : InitFragment.InitFragmentListener {
             override fun initSuccess() {
                 isInitSuccess = true
                 replaceFragment(MainFragment(), FragmentAnimateType.FADE)
@@ -72,12 +71,12 @@ class MainActivity : BaseFragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        mAdapter?.enableForegroundDispatch(this, mPendingIntent, null, null)
+//        mAdapter?.enableForegroundDispatch(this, mPendingIntent, null, null)
     }
 
     override fun onPause() {
         super.onPause()
-        mAdapter?.disableForegroundDispatch(this)
+//        mAdapter?.disableForegroundDispatch(this)
     }
 
     public override fun onNewIntent(intent: Intent) {
