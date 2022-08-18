@@ -130,6 +130,8 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
 
     private fun stopBack() {
         handler.post {
+            sendTimer?.cancel()
+            sendTimer = null
             isStopFetch = false
             listener?.onStopBack()
             BraceletMachineManager.processDone()
@@ -155,6 +157,7 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         try {
             isSending = true
             sendTimer = timer(initialDelay = 25000, period = 25000) {
+                cancel()
                 sendTimer?.cancel()
                 sendTimer = null
                 handler.post {
