@@ -22,6 +22,5 @@ class EBApplication : Application() {
         LocalLogger.version = BuildConfig.VERSION_NAME
         SoundHelper.loadSound(this)
         BraceletMachineManager.bind(this)
-        BraceletMachineManager.isDebug = BuildConfig.DEBUG
     }
 }
