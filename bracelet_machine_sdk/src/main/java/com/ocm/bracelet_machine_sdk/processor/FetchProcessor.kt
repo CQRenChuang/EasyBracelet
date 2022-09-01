@@ -160,9 +160,13 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
                 cancel()
                 sendTimer?.cancel()
                 sendTimer = null
+                timer?.cancel()
+                timer = null
+                isStopFetch = true
                 handler.post {
+                    listener?.onReceiveTimeout()    
                     BraceletMachineManager.processDone()
-                    listener?.onReceiveTimeout()
+                    listener?.onCompleted()                
                 }
             }
             if (isStop) {
