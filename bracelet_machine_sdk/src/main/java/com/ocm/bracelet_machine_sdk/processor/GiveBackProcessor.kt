@@ -96,6 +96,7 @@ internal class GiveBackProcessor: BaseProcessor() {
     }
 
     override fun OnMsg(msg: RobotMsg?, data: Any?) {
+        super.OnMsg(msg, data)
         if (BraceletMachineManager.machineState != BraceletMachineManager.MachineState.IN_GIVE_BACK &&
                 BraceletMachineManager.machineState != BraceletMachineManager.MachineState.IN_SINGLE_GIVE_BACK) {
             return

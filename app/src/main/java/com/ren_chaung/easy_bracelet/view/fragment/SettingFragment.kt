@@ -1,7 +1,6 @@
 package com.ren_chaung.easy_bracelet.view.fragment
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.comocm.base.extension.showToast
-import com.ocm.bracelet_machine_sdk.AllowGiveBackCallback
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ocm.bracelet_machine_sdk.BraceletMachineSystemListener
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.AppHelper
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
-import com.ren_chaung.easy_bracelet.view.activity.MainActivity
 import com.ren_chaung.easy_bracelet.view.dialog.SetupNumDialog
 import kotlinx.android.synthetic.main.fragment_setting.view.*
 
@@ -69,6 +66,29 @@ class SettingFragment : BaseFragment() {
                 }
 
             }
+
+            val spinnerFetchNumItems = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+            val fetchNumAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, spinnerFetchNumItems)
+            fetchNumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerFetchNum.adapter = fetchNumAdapter
+            spinnerFetchNum.setSelection(BraceletMachineManager.fetchNum-1)
+            spinnerFetchNum.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val oldPosition = BraceletMachineManager.fetchNum-1
+                    if (oldPosition == position) return
+                    BraceletMachineManager.setFetchNum(position+1)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+            }
+
 
             checkboxQR.isChecked = BraceletMachineManager.enableQRFetch
             checkboxQR.setOnCheckedChangeListener { buttonView, isChecked ->

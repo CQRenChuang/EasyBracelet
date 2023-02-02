@@ -28,6 +28,7 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
     var isStop = false
 
     override fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
+        super.OnMsg(msg, data)
         if(BraceletMachineManager.machineState != BraceletMachineManager.MachineState.FETCHING) {
             return
         }
@@ -38,15 +39,16 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.GetSuccess -> {
                 (data as? com.ocm.bracelet_machine_sdk.Machine.CardDataModel)?.let { card ->
                     getBrandAgainNumber = 0
-                    BraceletMachineManager.processDone()
-                    listener?.onFetchSuccess(card.CardNo, card.cardNoHex)
                     BraceletNumberManager.desCurrentNum()
                     if (fetchCount > 1) {
+                        listener?.onFetchSuccess(card.CardNo, card.cardNoHex)
                         fetchCount -= 1
                         listener?.onRemainingFetch(fetchCount)
                         fetch(lastContent)
 
                     } else {
+                        BraceletMachineManager.processDone()
+                        listener?.onFetchSuccess(card.CardNo, card.cardNoHex)
                         listener?.onCompleted()
                     }
                 }
@@ -101,12 +103,13 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
                     stopBack()
                     return
                 }
+                timer?.cancel()
                 timer = timer(initialDelay = 3000, period = 3000) {
                     if (isStop || isStopFetch) {
                         stopBack()
                         return@timer
                     }
-                    sendFetch()
+                    fetch(lastContent)
                     timer?.cancel()
                     timer = null
                 }

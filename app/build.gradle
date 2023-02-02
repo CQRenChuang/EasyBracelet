@@ -13,8 +13,8 @@ android {
         applicationId "com.ren_chaung.easy_bracelet"
         minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
         targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION as int
-        versionCode 11
-        versionName "1.2.0"
+        versionCode 12
+        versionName "1.2.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -82,7 +82,7 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport_upgrade:1.5.23'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     implementation 'com.tencent.bugly:nativecrashreport:3.7.3' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
-    api "com.ocm.lib:bracelet_machine_sdk:2.0.4"
-//    api project(":bracelet_machine_sdk")
+//    implementation project(path: ":${SDK_NAME}")
+    implementation "${maven_pom_groupid}:${SDK_NAME}:${SDK_VERSION_NAME}"
     api project(":sound")
 }

@@ -69,9 +69,10 @@ internal class SingleGiveBackProcessor: BaseProcessor() {
     }
 
     override fun OnMsg(msg: RobotMsg?, data: Any?) {
+        super.OnMsg(msg, data)
         if (msg == null) {
+            BraceletMachineManager.processDone()
             handler.post {
-                BraceletMachineManager.processDone()
                 listener?.onGiveBackFail("未读取到数据")
                 listener?.onCompleted()
                 callback?.onFail("未读取到数据")

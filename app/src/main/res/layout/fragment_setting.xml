@@ -20,6 +20,21 @@
         android:layout_width="match_parent"
         android:layout_height="56dp" />
     <TextView
+        android:text="一次取手环个数"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Spinner
+        android:background="@drawable/spinner_selector"
+        android:id="@+id/spinnerFetchNum"
+        android:focusable="true"
+        android:spinnerMode="dialog"
+        android:layout_width="match_parent"
+        android:layout_height="56dp" />
+    <TextView
         android:text="取手环配置"
         android:textColor="@color/white"
         android:textSize="18sp"

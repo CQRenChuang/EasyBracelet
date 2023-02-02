@@ -41,6 +41,7 @@ internal class InitProcessor: BaseProcessor() {
     }
 
     override fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
+        super.OnMsg(msg, data)
         when(msg) {
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.InitSuccess -> {
                 initDone = true

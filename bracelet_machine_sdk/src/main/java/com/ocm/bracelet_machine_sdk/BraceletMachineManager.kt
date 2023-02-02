@@ -74,11 +74,14 @@ object BraceletMachineManager: RobotInterface {
         private set
     var enableAutoRun = false
         private set
+    var fetchNum = 1
+        private set
     private val cardTypeIsIDKey = "cardTypeKey"
     private val enableQRFetchKey = "enableQRFetchKey"
     private val enableNFCFetchKey = "enableNFCFetchKey"
     private val enableCalcKey = "enableCalcKey"
     private val enableAutoRunKey = "enableAutoRunKey"
+    private val fetchNumKey = "fetchNumKey"
 
     fun setCardType(type: CardType) {
         cardType = type
@@ -112,6 +115,13 @@ object BraceletMachineManager: RobotInterface {
         enableAutoRun = enable
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putBoolean(enableAutoRunKey, enable)
+        }?.apply()
+    }
+
+    fun setFetchNum(num: Int) {
+        fetchNum = num
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putInt(fetchNumKey, num)
         }?.apply()
     }
 
@@ -196,6 +206,7 @@ object BraceletMachineManager: RobotInterface {
             enableNFCFetch = getBoolean(enableNFCFetchKey, false)
             enableCalc = getBoolean(enableCalcKey, true)
             enableAutoRun = getBoolean(enableAutoRunKey, false)
+            fetchNum = getInt(fetchNumKey, 1)
         }
     }
 
@@ -518,7 +529,6 @@ object BraceletMachineManager: RobotInterface {
                 } else {
                     callback.onCompleted()
                 }
-                callback.onCompleted()
 
             }, 5000)
             return

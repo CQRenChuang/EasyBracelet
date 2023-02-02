@@ -24,10 +24,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//    dokka {
-//        outputFormat = 'html'
-//        outputDirectory = "$buildDir/javadoc"
-//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -50,39 +46,4 @@ dependencies {
 
     implementation 'cn.shorr:ez-serialport:0.1.0'
     api "com.ocm.lib:floatLoger:1.0.5@aar"
-//    dokkaRuntime "org.jetbrains.dokka:dokka-fatjar:$dokkaVersion"
 }
-
-//apply plugin: 'maven'
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: maven_local_url) {
-//                authentication(userName:maven_local_username ,password: maven_local_password)
-//            }
-//
-//            pom.project {
-//                version SDK_VERSION_NAME
-//                artifactId SDK_NAME
-//                groupId maven_pom_groupid
-//                packaging maven_pom_packaging
-//                description "一厘米科技，智慧前台SDK"
-//            }
-//        }
-//    }
-//    task androidSourcesJar(type: Jar) {
-//        group = 'jar'
-//        classifier = 'sources'
-//        from android.sourceSets.main.java.sourceFiles
-//    }
-//    artifacts {
-//        archives androidSourcesJar
-//    }
-//}
-
-
-//task printVersionName {
-//    doLast {
-//        println "${android.defaultConfig.versionName}(${android.defaultConfig.versionCode})"
-//    }
-//}

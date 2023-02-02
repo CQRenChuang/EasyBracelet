@@ -26,7 +26,11 @@ class FetchFragment : BaseFragment(), FetchCallback {
     ): View? {
         SoundHelper.beginFetch()
         return inflater.inflate(R.layout.fragment_fetch, container, false).apply {
-            BraceletMachineManager.fetchBracelet(this@FetchFragment)
+            if (BraceletMachineManager.fetchNum == 1) {
+                BraceletMachineManager.fetchBracelet(this@FetchFragment)
+            } else {
+                BraceletMachineManager.fetchMultiBracelet(BraceletMachineManager.fetchNum, this@FetchFragment)
+            }
         }
     }
 
@@ -44,6 +48,9 @@ class FetchFragment : BaseFragment(), FetchCallback {
 
     override fun onFetchSuccess(no: String, hexNo: String) {
         showToast("$no\n$hexNo")
+    }
+
+    override fun onCompleted() {
         SoundHelper.endFetch()
         canGoBack = true
         popFragment()

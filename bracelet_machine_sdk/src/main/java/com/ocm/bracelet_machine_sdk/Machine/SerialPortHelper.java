@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager;
+import com.ocm.bracelet_machine_sdk.BuildConfig;
 import com.ocm.bracelet_machine_sdk.utils.StringHelper;
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger;
 
@@ -84,40 +85,12 @@ public class SerialPortHelper {
         lastSendCmdTime = System.currentTimeMillis();
         byte[] pack = RobotData.getPackage(cmdBuf,content);
         long t1 = System.currentTimeMillis();
-        write(pack);
-        Log.i(TAG,"WriteData spend time:"+(System.currentTimeMillis()-t1));
         lastSendCmdTime = System.currentTimeMillis()-WAITOUTTIME;
-        String str = "发送指令:"+ StringHelper.bytesToHexFun3(pack)+",content:"+content;
+        String str = BuildConfig.VERSION_NAME + "-发送指令:"+ StringHelper.bytesToHexFun3(pack)+",content:"+content;
         writeLog(str);
-        return true;
-    }
-    public void ReciveSendSuccess(){
-        robotLisenter.OnMsg(RobotMsg.ReciveSendSuccess,"");
-        lastSendCmd = new byte[2];
-    }
-
-    public boolean noRecordSendCmd(byte[] cmdBuf, String content){
-        byte[] pack = RobotData.getPackage(cmdBuf,content);
-        long t1 = System.currentTimeMillis();
         write(pack);
         Log.i(TAG,"WriteData spend time:"+(System.currentTimeMillis()-t1));
-        String str = "发送指令:"+StringHelper.bytesToHexFun3(pack)+",content:"+content;
-        writeLog(str);
         return true;
-    }
-    void ReciveCallBack(RobotMsg msg){
-        if(robotLisenter!=null){
-            if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.RECIVE)){
-                robotLisenter.OnMsg(msg,"");
-                lastSendCmd=new byte[2];
-            }
-        }
-    }
-    void GetCallBack(RobotMsg msg){
-        if(robotLisenter!=null){
-            if(RobotData.byteEqule(lastSendCmd,RobotData.HOST.TAKEBRAND))
-                robotLisenter.OnMsg(msg,"");
-        }
     }
 
     private void write(byte[] data){
