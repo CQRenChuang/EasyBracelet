@@ -18,7 +18,7 @@ class EBApplication : Application() {
         Beta.autoCheckUpgrade = false
         Beta.initDelay = 0
         CrashHandler.init(this)
-        BraceletMachineManager.isDebug = BuildConfig.DEBUG
+        //BraceletMachineManager.isDebug = BuildConfig.DEBUG
         LocalLogger.isDebug = true
         LocalLogger.version = BuildConfig.VERSION_NAME
         SoundHelper.loadSound(this)

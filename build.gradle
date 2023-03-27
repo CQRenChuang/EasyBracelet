@@ -19,7 +19,7 @@ allprojects {
         google()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven {
-            url 'http://maven.ocmcom.com:9999/repository/sdk/'
+            url 'http://maven.xiaoliyun.com:9999/repository/sdk/'
         }
     }
 }
