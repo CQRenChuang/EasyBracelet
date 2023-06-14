@@ -116,11 +116,11 @@ class SettingFragment : BaseFragment() {
                 SetupNumDialog.create(context).show()
             }
 
-            openBack.setOnSingleClickListener {
+            buttonOpenBack.setOnSingleClickListener {
                 if (isOpenBack) {
                     BraceletMachineManager.sysStopPush(object : BraceletMachineSystemListener {
                         override fun onSuccess() {
-                            openBack.text = "打开回收口"
+                            buttonOpenBack.text = "打开回收口"
                             isOpenBack = !isOpenBack
                         }
 
@@ -132,7 +132,7 @@ class SettingFragment : BaseFragment() {
                 } else {
                     BraceletMachineManager.sysStartPush(object : BraceletMachineSystemListener {
                         override fun onSuccess() {
-                            openBack.text = "关闭回收口"
+                            buttonOpenBack.text = "关闭回收口"
                             isOpenBack = !isOpenBack
                         }
 

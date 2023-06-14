@@ -106,7 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="64dp" />
     <Button
-        android:id="@+id/openBack"
+        android:id="@+id/buttonOpenBack"
         android:text="打开回收口"
         android:textSize="16sp"
         android:textColor="#333"

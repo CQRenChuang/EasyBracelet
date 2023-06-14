@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="手环类型"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/spinnerCardType"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/spinner_selector"
+                android:focusable="true"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="一次取手环个数"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/spinnerFetchNum"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/spinner_selector"
+                android:focusable="true"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="手环机控制类型"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/spinnerDeviceType"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/spinner_selector"
+                android:focusable="true"
+                android:spinnerMode="dialog" />
+
+            <LinearLayout
+                android:id="@+id/layoutCheckSelf"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="开机自检配置"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/checkboxCheckSelfNo1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbox_selector"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="自检一号机"
+                        android:textSize="14sp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxCheckSelfNo2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:button="@drawable/checkbox_selector"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="自检二号机"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="取手环配置"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkboxQR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/checkbox_selector"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="扫二维码直接取"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxNFC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:button="@drawable/checkbox_selector"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="刷 IC 卡直接取"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkboxCalc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/checkbox_selector"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="收发手环计数    "
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxAutoRun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:button="@drawable/checkbox_selector"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="开机自启动"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonSetNum"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_white_radius6"
+                android:text="数量配置"
+                android:textColor="#333"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/buttonOpenBack"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_white_radius6"
+                android:text="打开回收口"
+                android:textColor="#333"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+</FrameLayout>

@@ -28,8 +28,15 @@
                             tools:text="@string/app_name"
                             android:textColor="#ffffffff"
                             android:textSize="24sp"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
+                        <ImageView
+                            android:id="@+id/ivNavRight"
+                            android:src="@mipmap/ic_setting_white"
+                            android:visibility="gone"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp" />
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/layoutContainer"

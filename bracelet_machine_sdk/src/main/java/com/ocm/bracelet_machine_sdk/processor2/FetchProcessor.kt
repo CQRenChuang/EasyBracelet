@@ -3,6 +3,7 @@
 import android.content.Context
 import android.os.Handler
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager.serialPortHelper
 import com.ocm.bracelet_machine_sdk.BraceletManager2
 import com.ocm.bracelet_machine_sdk.NumberManager2
 import com.ocm.bracelet_machine_sdk.R
@@ -80,7 +81,7 @@ internal class FetchProcessor(context: Context, private val addrIndex: Int) : Ba
                             R.string.error_robot) ?: "")
                     if (isStop) return
                     isStop = true
-                    BraceletManager2.serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.STOP, "", addrIndex)
+                    serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.STOP, "", addrIndex)
                     BraceletManager2.listener?.onStateChange(addrIndex, true)
 
                 } else {
@@ -178,10 +179,10 @@ internal class FetchProcessor(context: Context, private val addrIndex: Int) : Ba
             }
             if (isStop) {
                 isStop = false
-                BraceletManager2.serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.START, "", addrIndex)
+                serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.START, "", addrIndex)
                 BraceletManager2.listener?.onStateChange(addrIndex, false)
             } else {
-                BraceletManager2.serialPortHelper?.SendCmd(
+                serialPortHelper?.SendCmd(
                     com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.TAKEBRAND, lastContent ?: "", addrIndex)
             }
         } catch (e: Throwable) {

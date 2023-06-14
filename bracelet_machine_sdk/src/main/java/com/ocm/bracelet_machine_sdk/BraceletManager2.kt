@@ -1,24 +1,16 @@
 package com.ocm.bracelet_machine_sdk
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
-import android.provider.Settings
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager.cardType
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager.serialPortHelper
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager.setCardType
 import com.ocm.bracelet_machine_sdk.Machine.RobotData
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
-import com.ocm.bracelet_machine_sdk.Machine.SerialPortHelper
 import com.ocm.bracelet_machine_sdk.processor2.*
-import com.ocm.bracelet_machine_sdk.processor2.FetchProcessor
-import com.ocm.bracelet_machine_sdk.processor2.GiveBackProcessor
-import com.ocm.bracelet_machine_sdk.processor2.InitProcessor
-import com.ocm.bracelet_machine_sdk.processor2.SingleGiveBackProcessor
-import com.ocm.bracelet_machine_sdk.processor2.TestProcessor
 import com.ocm.bracelet_machine_sdk.model.NumModel
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
-import com.ocm.smartrobot.utils.GPIOHelper
-import floatwindow.xishuang.float_lib.FloatLoger
 import java.lang.ref.WeakReference
-import java.net.NetworkInterface
 import java.util.*
 
 
@@ -26,85 +18,16 @@ import java.util.*
  * 手环设备操作
  * 使用前先初始化和自检 init(context) & checkSelf
  */
-object BraceletManager2: RobotInterface {
-
-
-    fun isIC(): Boolean {
-        return cardType == BraceletMachineManager.CardType.IC
-    }
-    internal var cardType = BraceletMachineManager.CardType.IC
-    var enableQRFetch = false
-        private set
-    var enableNFCFetch = false
-        private set
-    var enableCalc = true
-        private set
-    var enableAutoRun = false
-        private set
-    var fetchNum = 1
-        private set
-    private val cardTypeIsIDKey = "cardTypeKey"
-    private val enableQRFetchKey = "enableQRFetchKey"
-    private val enableNFCFetchKey = "enableNFCFetchKey"
-    private val enableCalcKey = "enableCalcKey"
-    private val enableAutoRunKey = "enableAutoRunKey"
-    private val fetchNumKey = "fetchNumKey"
-
-    fun setCardType(type: BraceletMachineManager.CardType) {
-        cardType = type
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putBoolean(cardTypeIsIDKey, !isIC())
-        }?.apply()
-    }
-
-    fun setEnableQRFetch(enable: Boolean) {
-        enableQRFetch = enable
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putBoolean(enableQRFetchKey, enable)
-        }?.apply()
-    }
-
-    fun setEnableNFCFetch(enable: Boolean) {
-        enableNFCFetch = enable
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putBoolean(enableNFCFetchKey, enable)
-        }?.apply()
-    }
-
-    fun setEnableCalc(enable: Boolean) {
-        enableCalc = enable
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putBoolean(enableCalcKey, enable)
-        }?.apply()
-    }
-
-    fun setEnableAutoRun(enable: Boolean) {
-        enableAutoRun = enable
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putBoolean(enableAutoRunKey, enable)
-        }?.apply()
-    }
-
-    fun setFetchNum(num: Int) {
-        fetchNum = num
-        NumberManager2.sharedPreferences?.edit()?.apply {
-            putInt(fetchNumKey, num)
-        }?.apply()
-    }
+object BraceletManager2 {
 
     internal var listener: BraceletListener? = null
     private var sysListener: BraceletMachineSystemListener? = null
     var contextReference: WeakReference<Context>? = null
 
-    internal var serialPortHelper: SerialPortHelper? = null
-
     private val testProcessor = TestProcessor()
     private val initProcessorList = arrayOf(InitProcessor(0), InitProcessor(1))
     private var fetchProcessorList = arrayOf<FetchProcessor>()
-    private val givebackProcessor = GiveBackProcessor()
-    private val singleGiveBackProcessor = SingleGiveBackProcessor()
     internal var borrowOpt = com.ocm.bracelet_machine_sdk.Machine.OptModel()
-    internal var backOpt = com.ocm.bracelet_machine_sdk.Machine.OptModel()
     internal var machineState = BraceletMachineManager.MachineState.IDLE
     internal var isSyspush = false
     private val handler = Handler()
@@ -133,39 +56,14 @@ object BraceletManager2: RobotInterface {
         return NumberManager2.numList.getOrNull(addrIndex)?.currentNum ?: 0
      }
 
-    fun loadData(context: Context) {
-        NumberManager2.loadForSharedPreferences(context)
-        NumberManager2.sharedPreferences?.apply {
-            val isID = getBoolean(cardTypeIsIDKey, false)
-            cardType = if(isID) BraceletMachineManager.CardType.ID else BraceletMachineManager.CardType.IC
-            enableQRFetch = getBoolean(enableQRFetchKey, false)
-            enableNFCFetch = getBoolean(enableNFCFetchKey, false)
-            enableCalc = getBoolean(enableCalcKey, true)
-            enableAutoRun = getBoolean(enableAutoRunKey, false)
-            fetchNum = getInt(fetchNumKey, 1)
-        }
-    }
-
     /**
      * 绑定context
      * @param context Context
      */
     fun bind(context: Context) {
         LocalLogger.isDebug = true
-        loadData(context)
         fetchProcessorList = arrayOf(FetchProcessor(context, 0), FetchProcessor(context, 1))
         contextReference = WeakReference(context)
-        serialPortHelper?.close()
-        serialPortHelper = SerialPortHelper(
-            context,
-            object : com.ocm.bracelet_machine_sdk.Machine.MachineInterface {
-                override fun onConnect() {
-                }
-
-                override fun disConnect() {
-                    listener?.onDisconnect()
-                }
-            })
         //手环数量回调
         NumberManager2.numList.forEach { it.listener = object : NumModel.NumberListener {
             override fun onNoBracelet(addr: Int) {
@@ -181,55 +79,6 @@ object BraceletManager2: RobotInterface {
             }
 
         } }
-        setupRobotListener()
-        serialPortHelper?.Connect()
-        try {
-            FloatLoger.getInstance().stopServer(context)
-
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        try {
-            FloatLoger.ShowFloat = false
-            FloatLoger.setSize(500*1024)
-            FloatLoger.getInstance().startServer(context)
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        try {
-            FloatLoger.getInstance().clearOutLog(5)
-            FloatLoger.getInstance().hide()
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun getLocalMac(context: Context): String {
-        var address: String? = null
-        // 把当前机器上的访问网络接口的存入 Enumeration集合中
-        val interfaces = NetworkInterface.getNetworkInterfaces()
-        while (interfaces.hasMoreElements()) {
-            val netWork = interfaces.nextElement()
-            // 如果存在硬件地址并可以使用给定的当前权限访问，则返回该硬件地址（通常是 MAC）。
-            val by = netWork.hardwareAddress
-            if (by == null || by.isEmpty()) {
-                continue
-            }
-            val builder = StringBuilder()
-            for (b in by) {
-                builder.append(String.format("%02x:", b))
-            }
-            if (builder.isNotEmpty()) {
-                builder.deleteCharAt(builder.length - 1)
-            }
-            val mac = builder.toString()
-            // 从路由器上在线设备的MAC地址列表，可以印证设备Wifi的 name 是 wlan0
-            if (netWork.name == "wlan0") {
-                address = mac
-            }
-        }
-        return address ?: Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     /**
@@ -240,77 +89,6 @@ object BraceletManager2: RobotInterface {
         LocalLogger.write("开始转动滚筒")
         serialPortHelper?.SendCmd(RobotData.HOST.START, "", 0)
         listener?.onStateChange(addrIndex, true)
-    }
-
-    /**
-     * 配置归还超时时间
-     * @param timeout Long 秒
-     */
-    fun setGiveBackTimeout(timeout: Int) {
-        givebackProcessor.timeout = timeout
-    }
-
-    /**
-     * 释放资源
-     */
-    fun onDestroy() {
-        serialPortHelper?.close()
-    }
-
-    /**
-     * 打开扫码器
-     */
-    fun openQR() {
-        GPIOHelper.relayOn()
-    }
-
-    /**
-     * 关闭扫码器
-     */
-    fun closeQR() {
-        GPIOHelper.relayOff()
-    }
-
-    /**
-     * 打开 LED 补光灯
-     */
-    fun openLedLight() {
-        GPIOHelper.ledOn()
-    }
-
-    /**
-     * 关闭 LED 补光灯
-     */
-    fun closeLedLight() {
-        GPIOHelper.ledOff()
-    }
-
-    /**
-     * 打开红外补光灯，用于红外活体检测
-     */
-    fun openIRLight() {
-        GPIOHelper.cameraRedOn()
-    }
-
-    /**
-     * 关闭红外补光灯
-     */
-    fun closeIRLight() {
-        GPIOHelper.cameraRedOff()
-    }
-
-    /**
-     * 获取手环机状态
-     */
-    fun fetchStatus(callback: CheckStatusCallback) {
-        if (machineState != BraceletMachineManager.MachineState.IDLE) {
-            callback.onSuccess(BraceletMachineManager.BraceletMachineStatus.BUSY)
-            callback.onCompleted()
-            return
-        }
-        machineState = BraceletMachineManager.MachineState.TEST
-        testProcessor.setCallback(callback)
-        testProcessor.start()
     }
 
     /**
@@ -358,14 +136,10 @@ object BraceletManager2: RobotInterface {
     }
 
     //操作处理结束
-    internal fun processDone() {
+    fun processDone() {
         LocalLogger.write("状态重置")
         fetchProcessorList.getOrNull(addrIndex)?.destory()
         machineState = BraceletMachineManager.MachineState.IDLE
-    }
-
-    fun destoryGiveBack() {
-        singleGiveBackProcessor.destory()
     }
 
     /**
@@ -502,192 +276,6 @@ object BraceletManager2: RobotInterface {
         return false
     }
 
-//    /**
-//     * 还手环
-//     */
-//    fun giveBackBracelet(callback: GiveBackCallback) {
-//        giveBackBracelet("01", SectorType.SECTOR2, "FFFFFFFFFFFF", "", callback)
-//    }
-//
-//    /***
-//     * 还手环，并写入数据
-//     *
-//     * @param sector SectorType 扇区，输入SECTOR1-15
-//     * @param pwd String 密码，6字节16进制字符串，如默认："FFFFFFFFFFFF"
-//     * @param content String 写入0-2块的内容，48个字节内
-//     * @param callback GiveBackCallback 获取回调
-//     */
-//    fun giveBackBracelet(sector: SectorType, pwd: String, content: String, callback: GiveBackCallback) {
-//        giveBackBracelet("03", sector, pwd, content, callback)
-//    }
-//
-//    private fun giveBackBracelet(type: String, sector: SectorType, pwd: String, content: String, callback: GiveBackCallback) {
-//        val checkStatus = checkStatus()
-//        if (checkStatus != null) {
-//            callback.onGiveBackFail(checkStatus)
-//            callback.onCompleted()
-//            return
-//        }
-//        if (checkIsFull(0)) {
-//            callback.onGiveBackFail("手环已满")
-//            callback.onCompleted()
-//            return
-//        }
-//        if (pwd.count() != 12) {
-//            callback.onGiveBackFail("密码位数错误")
-//            callback.onCompleted()
-//            return
-//        }
-//        if (content.count() > 96) {
-//            callback.onGiveBackFail("写入内容太长")
-//            callback.onCompleted()
-//            return
-//        }
-//        machineState = MachineState.IN_GIVE_BACK
-//        var supplementZero = ""//不足补零
-//        if (content.count() < 96) {
-//            val supplement = 96 - content.count()
-//            for (index in 0 until supplement)
-//                supplementZero = "${supplementZero}0"
-//        }
-//        givebackProcessor.backOpt.key = sector.cmd
-//        givebackProcessor.backOpt.pwd = pwd
-//        givebackProcessor.backOpt.type = type
-//        givebackProcessor.backOpt.sectorContent = content+supplementZero
-//        givebackProcessor.setCallback(callback)
-//        givebackProcessor.start()
-//    }
-//
-//    /**
-//     * 主动停止还手环
-//     */
-//    fun stopGiveBack() {
-//        givebackProcessor.stop()
-//        processDone()
-//    }
-//
-//    /**
-//     * 读取回收处卡号
-//     */
-//    fun readRecyclingNo(callback: WRGiveBackCallback) {
-//        val checkStatus = checkStatus()
-//        if (checkStatus != null) {
-//            callback.onGiveBackFail(checkStatus)
-//            callback.onCompleted()
-//            return
-//        }
-//        if (checkIsFull(0)) {
-//            callback.onGiveBackFail("手环已满")
-//            callback.onCompleted()
-//            return
-//        }
-//        machineState = MachineState.IN_SINGLE_GIVE_BACK
-//        singleGiveBackProcessor.readNo(callback)
-//    }
-//
-//    /**
-//     * 读取回收处卡号和扇区
-//     */
-//    fun readRecyclingInfo(sector: SectorType, pwd: String, callback: WRGiveBackCallback) {
-//        val checkStatus = checkStatus()
-//        if (checkStatus != null) {
-//            callback.onGiveBackFail(checkStatus)
-//            callback.onCompleted()
-//            return
-//        }
-//        if (checkIsFull(0)) {
-//            callback.onGiveBackFail("手环已满")
-//            callback.onCompleted()
-//            return
-//        }
-//        if (pwd.count() != 12) {
-//            callback.onGiveBackFail("密码位数错误")
-//            callback.onCompleted()
-//            return
-//        }
-//        machineState = MachineState.IN_SINGLE_GIVE_BACK
-//        singleGiveBackProcessor.readInfo(sector, pwd, callback)
-//    }
-//
-//    /**
-//     * 读取回收处卡号并写扇区
-//     */
-//    fun readRecyclingNoAndWriteSector(sector: SectorType, pwd: String, content: String, callback: WRGiveBackCallback) {
-//        val checkStatus = checkStatus()
-//        if (checkStatus != null) {
-//            callback.onGiveBackFail(checkStatus)
-//            callback.onCompleted()
-//            return
-//        }
-//        if (checkIsFull(0)) {
-//            callback.onGiveBackFail("手环已满")
-//            callback.onCompleted()
-//            return
-//        }
-//        if (pwd.count() != 12) {
-//            callback.onGiveBackFail("密码位数错误")
-//            callback.onCompleted()
-//            return
-//        }
-//        if (content.count() > 96) {
-//            callback.onGiveBackFail("写入内容太长")
-//            callback.onCompleted()
-//            return
-//        }
-//        var supplementZero = ""//不足补零
-//        if (content.count() < 96) {
-//            val supplement = 96 - content.count()
-//            for (index in 0 until supplement)
-//                supplementZero = "${supplementZero}0"
-//        }
-//        machineState = MachineState.IN_SINGLE_GIVE_BACK
-//        singleGiveBackProcessor.readNoAndWriteSector(sector, pwd, content + supplementZero, callback)
-//    }
-//
-//    fun openRecycling(callback: AllowGiveBackCallback) {
-//        val checkStatus = checkStatus()
-//        if (checkStatus != null) {
-//            callback.onFail(checkStatus)
-//            callback.onCompleted()
-//            return
-//        }
-//        if (checkIsFull(0)) {
-//            callback.onFail("手环已满")
-//            callback.onCompleted()
-//            return
-//        }
-//        machineState = MachineState.IN_SINGLE_GIVE_BACK
-//        singleGiveBackProcessor.giveback(callback)
-//    }
-//
-//    /**
-//     * 系统放置手环
-//     */
-//    fun sysStartPush(listener: BraceletMachineSystemListener) {
-//        if (isSyspush || isDebug) {
-//            listener.onSuccess()
-//            return
-//        }
-//        isSyspush = true
-//        LocalLogger.write("放置手环")
-//        sysListener = listener
-//        serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.PUSHBRAND,"", 0)
-//    }
-//
-//    /**
-//     * 系统停止放置手环
-//     */
-//    fun sysStopPush(listener: BraceletMachineSystemListener) {
-//        if (!isSyspush || isDebug) {
-//            listener.onSuccess()
-//            return
-//        }
-//        isSyspush = false
-//        LocalLogger.write("停止放置手环")
-//        sysListener = listener
-//        serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.PUSHBRANDOVER,"", 0)
-//    }
-
     private fun checkStatus(addrIndex: Int): String? {
         if (contextReference == null) {
             return "请先使用 bind 方法，绑定 context"
@@ -708,27 +296,9 @@ object BraceletManager2: RobotInterface {
         return null
     }
 
-    //配置信息回调监听
-    private fun setupRobotListener() {
-        serialPortHelper?.setOnMsg(this)
-        serialPortHelper?.setOnSysMsg { msg, _ ->
-            if (msg == null) return@setOnSysMsg
-            when(msg) {
-                com.ocm.bracelet_machine_sdk.Machine.RobotSysMsg.Success -> sysListener?.onSuccess()
-                com.ocm.bracelet_machine_sdk.Machine.RobotSysMsg.Fail -> sysListener?.onFail()
-            }
-        }
-    }
-
-    override fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
-        LocalLogger.write("OnMsg - $msg")
+    fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
         initProcessorList.getOrNull(addrIndex)?.OnMsg(msg, data)
         fetchProcessorList.getOrNull(addrIndex)?.OnMsg(msg, data)
-        if (machineState == BraceletMachineManager.MachineState.IN_GIVE_BACK) {
-            givebackProcessor.OnMsg(msg, data)
-        } else {
-            singleGiveBackProcessor.OnMsg(msg, data)
-        }
         testProcessor.OnMsg(msg, data)
         robotListener?.OnMsg(msg, data)
     }

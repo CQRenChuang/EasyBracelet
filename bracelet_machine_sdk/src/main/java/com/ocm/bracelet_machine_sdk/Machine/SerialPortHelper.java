@@ -22,6 +22,14 @@ public class SerialPortHelper {
 
     String TAG = "SPH";
     MachineInterface machineInterface;
+
+    private String serialName = "/dev/ttyS3";
+
+    public SerialPortHelper(String serialName, Context c, MachineInterface mi){
+        this.contextReference = new WeakReference<>(c);
+        this.machineInterface = mi;
+    }
+
     public SerialPortHelper(Context c, MachineInterface mi){
         this.contextReference = new WeakReference<>(c);
         this.machineInterface = mi;
@@ -29,7 +37,7 @@ public class SerialPortHelper {
 
     public void Connect() {
         //配置串口参数
-        serialPortUtil = new SerialPortUtilExtend(contextReference.get(),new SerialPortConfig("/dev/ttyS0", 115200));
+        serialPortUtil = new SerialPortUtilExtend(contextReference.get(),new SerialPortConfig(serialName, 115200));
         //设置为调试模式，打印收发数据
         serialPortUtil.setDebug(true);
         //绑定串口服务

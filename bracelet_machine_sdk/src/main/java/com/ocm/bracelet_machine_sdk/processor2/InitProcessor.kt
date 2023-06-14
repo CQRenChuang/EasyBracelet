@@ -1,6 +1,7 @@
 package com.ocm.bracelet_machine_sdk.processor2
 
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.BraceletManager2
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import java.util.*
 
@@ -39,12 +40,12 @@ internal class InitProcessor(private val addrIndex: Int): BaseProcessor() {
         when(msg) {
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.InitSuccess -> {
                 initDone = true
-                BraceletMachineManager.processDone()
+                BraceletManager2.processDone()
                 listener?.onCheckSelfSuccess()
                 listener?.onCompleted()
             }
             com.ocm.bracelet_machine_sdk.Machine.RobotMsg.InitFail -> {
-                BraceletMachineManager.processDone()
+                BraceletManager2.processDone()
                 listener?.onCheckSelfFail(data.toString())
                 listener?.onCompleted()
             }

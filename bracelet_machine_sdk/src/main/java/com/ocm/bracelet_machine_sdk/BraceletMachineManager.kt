@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.provider.Settings
+import com.ocm.bracelet_machine_sdk.Machine.MachineInterface
 import com.ocm.bracelet_machine_sdk.Machine.RobotData
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
+import com.ocm.bracelet_machine_sdk.Machine.SerialPortHelper
 import com.ocm.bracelet_machine_sdk.processor.*
 import com.ocm.bracelet_machine_sdk.processor.FetchProcessor
 import com.ocm.bracelet_machine_sdk.processor.GiveBackProcessor
@@ -47,10 +49,10 @@ object BraceletMachineManager: RobotInterface {
     }
 
     /**
-     * 手环收发模式
+     * 手环机类型， 默认，两台发手环
      */
-    enum class BraceletMode {
-        ONLINE , OFFLINE
+    enum class DeviceType {
+        Normal, TwoFetch
     }
 
     /**
@@ -74,14 +76,28 @@ object BraceletMachineManager: RobotInterface {
         private set
     var enableAutoRun = false
         private set
+
+    var checkSelfNo1 = true
+        private set
+
+    var checkSelfNo2 = true
+        private set
+
     var fetchNum = 1
         private set
+
+    var deviceType = DeviceType.Normal
+        private set
+
     private val cardTypeIsIDKey = "cardTypeKey"
     private val enableQRFetchKey = "enableQRFetchKey"
     private val enableNFCFetchKey = "enableNFCFetchKey"
     private val enableCalcKey = "enableCalcKey"
     private val enableAutoRunKey = "enableAutoRunKey"
     private val fetchNumKey = "fetchNumKey"
+    private val deviceTypeKey = "deviceTypeKey"
+    private val checkSelfNo1Key = "checkSelfNo1Key"
+    private val checkSelfNo2Key = "checkSelfNo2Key"
 
     fun setCardType(type: CardType) {
         cardType = type
@@ -111,6 +127,20 @@ object BraceletMachineManager: RobotInterface {
         }?.apply()
     }
 
+    fun setCheckSelfNo1(enable: Boolean) {
+        checkSelfNo1 = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(checkSelfNo1Key, enable)
+        }?.apply()
+    }
+
+    fun setCheckSelfNo2(enable: Boolean) {
+        checkSelfNo2 = enable
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putBoolean(checkSelfNo2Key, enable)
+        }?.apply()
+    }
+
     fun setEnableAutoRun(enable: Boolean) {
         enableAutoRun = enable
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
@@ -122,6 +152,13 @@ object BraceletMachineManager: RobotInterface {
         fetchNum = num
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putInt(fetchNumKey, num)
+        }?.apply()
+    }
+
+    fun setDeviceType(type: DeviceType) {
+        deviceType = type
+        BraceletNumberManager.sharedPreferences?.edit()?.apply {
+            putString(deviceTypeKey, type.name)
         }?.apply()
     }
 
@@ -207,6 +244,9 @@ object BraceletMachineManager: RobotInterface {
             enableCalc = getBoolean(enableCalcKey, true)
             enableAutoRun = getBoolean(enableAutoRunKey, false)
             fetchNum = getInt(fetchNumKey, 1)
+            deviceType = DeviceType.valueOf(getString(deviceTypeKey, DeviceType.Normal.name) ?: "")
+            checkSelfNo1 = getBoolean(checkSelfNo1Key, true)
+            checkSelfNo2 = getBoolean(checkSelfNo2Key, true)
         }
     }
 
@@ -220,9 +260,9 @@ object BraceletMachineManager: RobotInterface {
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
         serialPortHelper?.close()
-        serialPortHelper = com.ocm.bracelet_machine_sdk.Machine.SerialPortHelper(
+        serialPortHelper = SerialPortHelper(if(BuildConfig.DEBUG) "/dev/ttyS3" else "/dev/ttyS0",
             context,
-            object : com.ocm.bracelet_machine_sdk.Machine.MachineInterface {
+            object : MachineInterface {
                 override fun onConnect() {
                 }
 
@@ -238,7 +278,7 @@ object BraceletMachineManager: RobotInterface {
 
             override fun onNoBracelet() {
                 fetchProcessor.isStop = true
-                serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.STOP, "")
+                serialPortHelper?.SendCmd(RobotData.HOST.STOP, "")
             }
 
             override fun onNeedRestart() {
@@ -265,6 +305,7 @@ object BraceletMachineManager: RobotInterface {
         }catch (e: Throwable) {
             e.printStackTrace()
         }
+        BraceletManager2.bind(context)
     }
 
     @SuppressLint("HardwareIds")
@@ -381,7 +422,7 @@ object BraceletMachineManager: RobotInterface {
      */
     fun stopRoll() {
         fetchProcessor.isStop = true
-        serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.STOP, "")
+        serialPortHelper?.SendCmd(RobotData.HOST.STOP, "")
         LocalLogger.write("主动停止转动滚筒")
         listener?.onStateChange(true)
         processDone()
@@ -414,7 +455,7 @@ object BraceletMachineManager: RobotInterface {
     }
 
     //操作处理结束
-    internal fun processDone() {
+    fun processDone() {
         LocalLogger.write("状态重置")
         fetchProcessor.destory()
         machineState = MachineState.IDLE
@@ -777,14 +818,21 @@ object BraceletMachineManager: RobotInterface {
 
     override fun OnMsg(msg: com.ocm.bracelet_machine_sdk.Machine.RobotMsg?, data: Any?) {
         LocalLogger.write("OnMsg - $msg")
-        initProcessor.OnMsg(msg, data)
-        fetchProcessor.OnMsg(msg, data)
-        if (machineState == MachineState.IN_GIVE_BACK) {
-            givebackProcessor.OnMsg(msg, data)
-        } else {
-            singleGiveBackProcessor.OnMsg(msg, data)
+        when(deviceType) {
+            DeviceType.Normal -> {
+                initProcessor.OnMsg(msg, data)
+                fetchProcessor.OnMsg(msg, data)
+                if (machineState == MachineState.IN_GIVE_BACK) {
+                    givebackProcessor.OnMsg(msg, data)
+                } else {
+                    singleGiveBackProcessor.OnMsg(msg, data)
+                }
+                testProcessor.OnMsg(msg, data)
+                robotListener?.OnMsg(msg, data)
+            }
+            DeviceType.TwoFetch -> {
+                BraceletManager2.OnMsg(msg, data)
+            }
         }
-        testProcessor.OnMsg(msg, data)
-        robotListener?.OnMsg(msg, data)
     }
 }

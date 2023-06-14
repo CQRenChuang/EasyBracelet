@@ -1,6 +1,7 @@
 package com.ocm.bracelet_machine_sdk.processor2
 
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.BraceletMachineManager.serialPortHelper
 import com.ocm.bracelet_machine_sdk.BraceletManager2
 import java.util.*
 import kotlin.concurrent.timer
@@ -15,7 +16,7 @@ internal class TestProcessor: BaseProcessor() {
     private var listener: com.ocm.bracelet_machine_sdk.CheckStatusCallback? = null
 
     fun start() {
-        BraceletManager2.serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.TEST, "", 0)
+        serialPortHelper?.SendCmd(com.ocm.bracelet_machine_sdk.Machine.RobotData.HOST.TEST, "", 0)
         timeoutTimer?.cancel()
         timeoutTimer = timer(initialDelay = 5000, period = 5000){
             timeoutTimer?.cancel()

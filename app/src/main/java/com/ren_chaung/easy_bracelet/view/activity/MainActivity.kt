@@ -1,5 +1,6 @@
 package com.ren_chaung.easy_bracelet.view.activity
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.media.AudioManager
@@ -7,22 +8,25 @@ import android.media.ToneGenerator
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import com.comocm.base.extension.showToast
-import com.comocm.sound.SoundHelper
+import com.comocm.base.extension.startNewActivity
 import com.ocm.bracelet_machine_sdk.BraceletMachineListener
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.NFCHelper
 import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
+import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.dialog.SetupNumDialog
 import com.ren_chaung.easy_bracelet.view.fragment.FetchFragment
 import com.ren_chaung.easy_bracelet.view.fragment.InitFragment
 import com.ren_chaung.easy_bracelet.view.fragment.MainFragment
-import com.ren_chaung.easy_bracelet.view.fragment.SettingFragment
-import com.tencent.bugly.beta.Beta
 import floatwindow.xishuang.float_lib.FloatLoger
-import kotlinx.android.synthetic.main.activity_base_fragment.*
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_base_fragment.ivNavRight
+import kotlinx.android.synthetic.main.activity_base_fragment.tvVersion
+import kotlinx.android.synthetic.main.activity_main.layoutMainContainer
+import kotlinx.android.synthetic.main.activity_main.layoutNumber
+import kotlinx.android.synthetic.main.activity_main.tvNumber
 
 class MainActivity : BaseFragmentActivity() {
     private var isInitSuccess = false
@@ -45,13 +49,14 @@ class MainActivity : BaseFragmentActivity() {
             }
         }), FragmentAnimateType.FADE)
 
+        ivNavRight.visibility = View.VISIBLE
+        ivNavRight.setOnSingleClickListener {
+            startNewActivity(SettingActivity::class.java)
+            finish()
+        }
+
         tvVersion.setOnMultiClickListener(3) {
-            if (!isInitSuccess || fragments.size > 1) {
-                showToast("开始检查更新")
-                Beta.checkUpgrade()
-                return@setOnMultiClickListener
-            }
-            push(SettingFragment())
+            showToast("无更新")
         }
 
         layoutNumber.setOnMultiClickListener(5) {
@@ -133,6 +138,11 @@ class MainActivity : BaseFragmentActivity() {
         if ((keyValue < 32 || keyValue > 126)) { return false }
         qrCode = "$qrCode${keyValue.toChar()}"
         return false
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onSaveInstanceState(outState: Bundle) {
+        //super.onSaveInstanceState(outState)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {

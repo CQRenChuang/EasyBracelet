@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.ocm.bracelet_machine_sdk.BraceletMachineListener
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.BraceletManager2
 import com.ocm.bracelet_machine_sdk.CheckSelfCallback
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
@@ -31,31 +32,79 @@ class InitFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_init, container, false).apply {
             tvState.text = "开始自检"
-            BraceletMachineManager.checkSelf(object : CheckSelfCallback{
-                override fun onCheckSelfFail(msg: String) {
-                    tvState.text = msg
+            when (BraceletMachineManager.deviceType) {
+                BraceletMachineManager.DeviceType.Normal -> {
+                    BraceletMachineManager.checkSelf(object : CheckSelfCallback {
+                        override fun onCheckSelfFail(msg: String) {
+                            tvState.text = msg
+                        }
+
+                        override fun onCheckSelfSuccess() {
+                            tvState.text = "自检成功"
+                            listener?.initSuccess()
+                        }
+                    })
                 }
 
-                override fun onCheckSelfSuccess() {
-                    tvState.text = "自检成功"
-                    listener?.initSuccess()
+                BraceletMachineManager.DeviceType.TwoFetch -> {
+                    if (BraceletMachineManager.checkSelfNo1) {
+                        checkNo1()
+                    } else if (BraceletMachineManager.checkSelfNo2) {
+                        checkNo2()
+                    } else {
+                        tvState.text = "自检成功"
+                        listener?.initSuccess()
+                    }
                 }
-            })
+            }
         }
     }
 
-    interface InitFragmentListener: Serializable {
+    private fun checkNo1() {
+        view?.tvState?.text = "自检手环机1"
+        BraceletManager2.checkSelf(0, object : CheckSelfCallback {
+            override fun onCheckSelfFail(msg: String) {
+                view?.tvState?.text = msg
+            }
+
+            override fun onCheckSelfSuccess() {
+                if (BraceletMachineManager.checkSelfNo2) {
+                    checkNo2()
+                } else {
+                    view?.tvState?.text = "自检成功"
+                    listener?.initSuccess()
+                }
+            }
+        })
+    }
+
+    private fun checkNo2() {
+        view?.tvState?.text = "自检手环机2"
+        BraceletManager2.checkSelf(1, object : CheckSelfCallback {
+            override fun onCheckSelfFail(msg: String) {
+                view?.tvState?.text = msg
+            }
+
+            override fun onCheckSelfSuccess() {
+                view?.tvState?.text = "自检成功"
+                listener?.initSuccess()
+            }
+        })
+    }
+
+    interface InitFragmentListener : Serializable {
         fun initSuccess()
     }
 
 
     companion object {
         private const val ARG_PARAM1 = "param1"
+
         @JvmStatic
         fun newInstance(param1: InitFragmentListener) =
             InitFragment().apply {
