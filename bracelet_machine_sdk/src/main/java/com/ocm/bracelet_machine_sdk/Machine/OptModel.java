@@ -1,8 +1,5 @@
 package com.ocm.bracelet_machine_sdk.Machine;
 
-import com.ocm.bracelet_machine_sdk.utils.StringHelper;
-import com.ocm.bracelet_machine_sdk.utils.StringHelper;
-
 import java.util.HashMap;
 
 public class OptModel {

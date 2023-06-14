@@ -1,9 +1,8 @@
-package com.ocm.bracelet_machine_sdk.processor
+package com.ocm.bracelet_machine_sdk.processor2
 
 import android.os.Handler
 import com.ocm.bracelet_machine_sdk.*
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager.serialPortHelper
-import com.ocm.bracelet_machine_sdk.BraceletNumberManager
 import com.ocm.bracelet_machine_sdk.Machine.CardDataModel
 import com.ocm.bracelet_machine_sdk.Machine.OptModel
 import com.ocm.bracelet_machine_sdk.Machine.RobotData
@@ -66,7 +65,7 @@ internal class GiveBackProcessor: BaseProcessor() {
         isSending = true
         serialPortHelper?.SendCmd(
             RobotData.HOST.RECIVE,
-            "01")
+            "01", 0)
     }
 
     /**
@@ -105,7 +104,7 @@ internal class GiveBackProcessor: BaseProcessor() {
             giveBackRollCount = 0
             if (cardDataModel != null) {
 //                handler.postDelayed({
-                    serialPortHelper?.SendCmd(RobotData.HOST.RECIVE, "${backOpt.type}${backOpt.key}${backOpt.pwd}${backOpt.sectorContent}")
+                    serialPortHelper?.simpleSendCmd(RobotData.HOST.RECIVE, "${backOpt.type}${backOpt.key}${backOpt.pwd}${backOpt.sectorContent}", 0)
 //                }, 500)
                 return
             }
@@ -113,7 +112,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 handler.postDelayed({
                     serialPortHelper?.SendCmd(
                         RobotData.HOST.RECIVE,
-                        "01")
+                        "01", 0)
                 }, 500)
             }
             return
@@ -129,7 +128,7 @@ internal class GiveBackProcessor: BaseProcessor() {
                 (data as? CardDataModel)?.let { card ->
                     if (cardDataModel != null) {
                         isSending = true
-                        serialPortHelper?.SendCmd(RobotData.HOST.RECIVENABLE, "")
+                        serialPortHelper?.simpleSendCmd(RobotData.HOST.RECIVENABLE, "", 0)
                         return@let
                     }
                     cardDataModel = card
@@ -143,11 +142,13 @@ internal class GiveBackProcessor: BaseProcessor() {
                                     handler.postDelayed({
                                         isSending = true
                                         if (backOpt.type == "03")
-                                            serialPortHelper?.SendCmd(RobotData.HOST.RECIVE, "${backOpt.type}${backOpt.key}${backOpt.pwd}${backOpt.sectorContent}")
+                                            serialPortHelper?.simpleSendCmd(RobotData.HOST.RECIVE,
+                                                "${backOpt.type}${backOpt.key}${backOpt.pwd}${backOpt.sectorContent}",
+                                                0)
                                         else {
-                                            serialPortHelper?.SendCmd(
+                                            serialPortHelper?.simpleSendCmd(
                                                 RobotData.HOST.RECIVENABLE,
-                                                ""
+                                                "", 0
                                             )
                                         }
 
@@ -165,8 +166,9 @@ internal class GiveBackProcessor: BaseProcessor() {
             }
             RobotMsg.ReciveSuccess -> {
                 serialPortHelper?.setReciveNotify(false)
-                BraceletNumberManager.addCurrentNum()
+                NumberManager2.addCurrentNum(0)
                 cardDataModel?.let { card ->
+                    BraceletMachineManager.processDone()
                     listener?.onGiveBackSuccess(card.CardNo, card.cardNoHex)
                 }
                 stopBack()
@@ -177,6 +179,7 @@ internal class GiveBackProcessor: BaseProcessor() {
             RobotMsg.ReciveFail -> {
                 serialPortHelper?.setReciveNotify(false)
                 handler.post {
+                    BraceletMachineManager.processDone()
                     listener?.onGiveBackFail("归还失败")
                 }
                 stopBack()

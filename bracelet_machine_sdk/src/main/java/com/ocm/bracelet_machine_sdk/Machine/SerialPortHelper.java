@@ -4,16 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager;
-import com.ocm.bracelet_machine_sdk.BuildConfig;
-import com.ocm.bracelet_machine_sdk.utils.StringHelper;
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger;
+import com.ocm.bracelet_machine_sdk.utils.StringHelper;
+
+import java.lang.ref.WeakReference;
+import java.util.concurrent.Executors;
 
 import cn.shorr.serialport.SerialPortConfig;
 import cn.shorr.serialport.SerialRead;
 import cn.shorr.serialport.SerialWrite;
-
-import java.lang.ref.WeakReference;
-import java.util.concurrent.Executors;
 
 public class SerialPortHelper {
     SerialPortUtilExtend serialPortUtil;
@@ -30,7 +29,7 @@ public class SerialPortHelper {
 
     public void Connect() {
         //配置串口参数
-        serialPortUtil = new SerialPortUtilExtend(contextReference.get(),new SerialPortConfig("/dev/ttyS3", 115200));
+        serialPortUtil = new SerialPortUtilExtend(contextReference.get(),new SerialPortConfig("/dev/ttyS0", 115200));
         //设置为调试模式，打印收发数据
         serialPortUtil.setDebug(true);
         //绑定串口服务
@@ -72,7 +71,15 @@ public class SerialPortHelper {
             writeLog("SendCmd: 发送间隔过短");
             return false;
         };
-        return simpleSendCmd(cmdBuf,hexContent);
+        return simpleSendCmd(cmdBuf,hexContent, 0);
+    }
+
+    public boolean SendCmd(final byte[] cmdBuf, final String hexContent, final int addrIndex){
+        if(System.currentTimeMillis()-lastSendCmdTime<WAITOUTTIME){
+            writeLog("SendCmd: 发送间隔过短");
+            return false;
+        };
+        return simpleSendCmd(cmdBuf,hexContent, addrIndex);
     }
 
     byte[] lastSendCmd = new byte[2];
@@ -80,13 +87,13 @@ public class SerialPortHelper {
     public void setReciveNotify(boolean val){
         reciveNotifyable = val;
     }
-    public boolean simpleSendCmd(byte[] cmdBuf, String content){
+    public boolean simpleSendCmd(byte[] cmdBuf, String content, int addrIndex){
         lastSendCmd = cmdBuf;
         lastSendCmdTime = System.currentTimeMillis();
-        byte[] pack = RobotData.getPackage(cmdBuf,content);
+        byte[] pack = RobotData.getPackage(cmdBuf,content, addrIndex);
         long t1 = System.currentTimeMillis();
         lastSendCmdTime = System.currentTimeMillis()-WAITOUTTIME;
-        String str = BuildConfig.VERSION_NAME + "-发送指令:"+ StringHelper.bytesToHexFun3(pack)+",content:"+content;
+        String str = "发送指令:"+ StringHelper.bytesToHexFun3(pack)+",content:"+content;
         writeLog(str);
         write(pack);
         Log.i(TAG,"WriteData spend time:"+(System.currentTimeMillis()-t1));
@@ -97,7 +104,10 @@ public class SerialPortHelper {
         SerialWrite.sendData(contextReference.get(), 0, data);
     }
 
-    class Serial0ReadListener implements SerialRead.ReadDataListener {
+    public class Serial0ReadListener implements SerialRead.ReadDataListener {
+
+        public Serial0ReadListener() {}
+
         byte[] recv_buff = new byte[63];
         byte[] tmp_buff = new byte[0];
         int recv_len;
@@ -131,7 +141,7 @@ public class SerialPortHelper {
                         if(RobotData.validCRC(recv_buff,recv_len)){
                             analyData(recv_buff,read_string);
                         }else{
-                            Log.i(TAG,"校验失败");
+                            writeLog("校验失败");
                         }
                     }
 //                    }

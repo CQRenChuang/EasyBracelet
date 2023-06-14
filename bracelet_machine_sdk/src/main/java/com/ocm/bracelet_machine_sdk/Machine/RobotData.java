@@ -1,7 +1,7 @@
 package com.ocm.bracelet_machine_sdk.Machine;
 
 import android.util.Log;
-import com.ocm.bracelet_machine_sdk.utils.StringHelper;
+
 import com.ocm.bracelet_machine_sdk.utils.StringHelper;
 
 /**
@@ -12,7 +12,7 @@ public class RobotData {
     private static String TAG = "RobotData";
 
     private static byte[] HEAD = new byte[]{intToByte(0x0f)};
-    private static byte[] ADDR = new byte[]{intToByte(0x01)};
+    private static byte[] ADDR = new byte[]{intToByte(0x01), intToByte(0x02)};
     public static class HOST{
         public static byte[] NULL = new byte[]{intToByte(0x00),intToByte(0x00)};
 //        public static byte[] SUCCESS = new byte[]{intToByte(0x0A),intToByte(0xA0)};
@@ -56,14 +56,14 @@ public class RobotData {
         return (byte) x;
     }
 
-    public static byte[] getPackage(byte[] CMD, String conent){
+    public static byte[] getPackage(byte[] CMD, String conent, int addr){
         if(conent.length()%2!=0)conent = "0"+conent;
         byte[] contentByte = StringHelper.hexStringToBytes(conent);
         int contentLen = contentByte==null?0:contentByte.length;
 //        byte[] pack = new byte[84];
         byte[] pack = new byte[contentLen+4];
         pack[0] = HEAD[0];
-        pack[1] = ADDR[0];
+        pack[1] = ADDR[addr];
         pack[2] = CMD[0];
         pack[3] = CMD[1];
         if(contentByte!=null){

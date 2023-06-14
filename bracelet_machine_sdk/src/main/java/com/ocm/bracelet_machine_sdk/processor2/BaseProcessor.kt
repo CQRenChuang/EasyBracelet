@@ -1,6 +1,5 @@
-package com.ocm.bracelet_machine_sdk.processor
+package com.ocm.bracelet_machine_sdk.processor2
 
-import com.ocm.bracelet_machine_sdk.BraceletManager2.versionDefine
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
 import com.ocm.bracelet_machine_sdk.Machine.RobotMsg
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
