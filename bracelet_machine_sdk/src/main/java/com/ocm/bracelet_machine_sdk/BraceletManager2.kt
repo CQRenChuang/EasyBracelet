@@ -54,7 +54,11 @@ object BraceletManager2 {
      */
     fun getCurrentBracelet(addrIndex: Int): Int {
         return NumberManager2.numList.getOrNull(addrIndex)?.currentNum ?: 0
-     }
+    }
+
+    fun setCurrentBracelet(addrIndex: Int, num: Int) {
+        NumberManager2.numList.getOrNull(addrIndex)?.currentNum = num
+    }
 
     /**
      * 绑定context
@@ -65,20 +69,23 @@ object BraceletManager2 {
         fetchProcessorList = arrayOf(FetchProcessor(context, 0), FetchProcessor(context, 1))
         contextReference = WeakReference(context)
         //手环数量回调
-        NumberManager2.numList.forEach { it.listener = object : NumModel.NumberListener {
-            override fun onNoBracelet(addr: Int) {
-                fetchProcessorList.getOrNull(addr)?.isStop = true
-                serialPortHelper?.SendCmd(RobotData.HOST.STOP, "", addr)
-            }
+        NumberManager2.numList.forEach {
+            it.listener = object : NumModel.NumberListener {
+                override fun onNoBracelet(addr: Int) {
+                    fetchProcessorList.getOrNull(addr)?.isStop = true
+                    serialPortHelper?.SendCmd(RobotData.HOST.STOP, "", addr)
+                }
 
-            override fun onNeedRestart(addr: Int) {
-            }
+                override fun onNeedRestart(addr: Int) {
+                }
 
-            override fun onCurrentNumChange(addr: Int, num: Int) {
-                listener?.onCurrentNumChange(addr, num)
-            }
+                override fun onCurrentNumChange(addr: Int, num: Int) {
+                    listener?.onCurrentNumChange(addr, num)
+                }
 
-        } }
+            }
+            it.loadForSharedPreferences(context)
+        }
     }
 
     /**
@@ -105,7 +112,11 @@ object BraceletManager2 {
     /**
      * 自检
      */
-    fun checkSelf(addrIndex: Int, type: BraceletMachineManager.CardType, callback: CheckSelfCallback) {
+    fun checkSelf(
+        addrIndex: Int,
+        type: BraceletMachineManager.CardType,
+        callback: CheckSelfCallback
+    ) {
         setCardType(type)
         checkSelf(addrIndex, callback)
     }
@@ -172,7 +183,15 @@ object BraceletManager2 {
      * 获取手环
      */
     fun fetchBracelet(addrIndex: Int, callback: FetchCallback) {
-        fetchBracelet(addrIndex, "01", 1,  BraceletMachineManager.SectorType.SECTOR2, borrowOpt.pwd, borrowOpt.Content(), callback)
+        fetchBracelet(
+            addrIndex,
+            "01",
+            1,
+            BraceletMachineManager.SectorType.SECTOR2,
+            borrowOpt.pwd,
+            borrowOpt.Content(),
+            callback
+        )
     }
 
     /***
@@ -183,7 +202,13 @@ object BraceletManager2 {
      * @param content String 写入0-2块的内容，48个字节内
      * @param callback FetchCallback 获取回调
      */
-    fun fetchBracelet(addrIndex: Int, sector: BraceletMachineManager.SectorType, pwd: String, content: String, callback: FetchCallback) {
+    fun fetchBracelet(
+        addrIndex: Int,
+        sector: BraceletMachineManager.SectorType,
+        pwd: String,
+        content: String,
+        callback: FetchCallback
+    ) {
         fetchBracelet(addrIndex, "03", 1, sector, pwd, content, callback)
     }
 
@@ -191,7 +216,15 @@ object BraceletManager2 {
      * 获取多个手环
      */
     fun fetchMultiBracelet(addrIndex: Int, num: Int, callback: FetchCallback) {
-        fetchBracelet(addrIndex, "01", num,  BraceletMachineManager.SectorType.SECTOR2, borrowOpt.pwd, borrowOpt.Content(), callback)
+        fetchBracelet(
+            addrIndex,
+            "01",
+            num,
+            BraceletMachineManager.SectorType.SECTOR2,
+            borrowOpt.pwd,
+            borrowOpt.Content(),
+            callback
+        )
     }
 
     /***
@@ -203,11 +236,26 @@ object BraceletManager2 {
      * @param content String 写入0-2块的内容，48个字节内
      * @param callback FetchCallback 获取回调
      */
-    fun fetchMultiBracelet(addrIndex: Int, num: Int, sector: BraceletMachineManager.SectorType, pwd: String, content: String, callback: FetchCallback) {
+    fun fetchMultiBracelet(
+        addrIndex: Int,
+        num: Int,
+        sector: BraceletMachineManager.SectorType,
+        pwd: String,
+        content: String,
+        callback: FetchCallback
+    ) {
         fetchBracelet(addrIndex, "03", num, sector, pwd, content, callback)
     }
 
-    private fun fetchBracelet(addrIndex: Int, type: String, num: Int, sector: BraceletMachineManager.SectorType, pwd: String, content: String, callback: FetchCallback) {
+    private fun fetchBracelet(
+        addrIndex: Int,
+        type: String,
+        num: Int,
+        sector: BraceletMachineManager.SectorType,
+        pwd: String,
+        content: String,
+        callback: FetchCallback
+    ) {
         this.addrIndex = addrIndex
         val checkStatus = checkStatus(addrIndex)
         if (checkStatus != null) {
@@ -243,8 +291,8 @@ object BraceletManager2 {
                 callback.onFetchSuccess("1234_$num", "hex1234")
                 NumberManager2.desCurrentNum(addrIndex)
                 if (num > 1) {
-                    callback.onRemainingFetch(num-1)
-                    fetchBracelet(addrIndex, type, num-1, sector, pwd, content, callback)
+                    callback.onRemainingFetch(num - 1)
+                    fetchBracelet(addrIndex, type, num - 1, sector, pwd, content, callback)
                 } else {
                     callback.onCompleted()
                 }
@@ -255,7 +303,8 @@ object BraceletManager2 {
         fetchProcessorList.getOrNull(addrIndex)?.fetchCount = num
         fetchProcessorList.getOrNull(addrIndex)?.setCallback(callback)
         machineState = BraceletMachineManager.MachineState.FETCHING
-        fetchProcessorList.getOrNull(addrIndex)?.fetch("$type${sector.cmd}$pwd$content$supplementZero")
+        fetchProcessorList.getOrNull(addrIndex)
+            ?.fetch("$type${sector.cmd}$pwd$content$supplementZero")
     }
 
     /**
@@ -270,7 +319,9 @@ object BraceletManager2 {
      * @return Boolean
      */
     fun checkIsFull(addrIndex: Int): Boolean {
-        if ((NumberManager2.numList.getOrNull(addrIndex)?.maxNum ?: 0) <= (NumberManager2.numList.getOrNull(addrIndex)?.currentNum ?: 0)) {
+        if ((NumberManager2.numList.getOrNull(addrIndex)?.maxNum
+                ?: 0) <= (NumberManager2.numList.getOrNull(addrIndex)?.currentNum ?: 0)
+        ) {
             return true
         }
         return false
@@ -284,7 +335,7 @@ object BraceletManager2 {
             return "设备未自检"
         }
         if (machineState != BraceletMachineManager.MachineState.IDLE) {
-            return when(machineState) {
+            return when (machineState) {
                 BraceletMachineManager.MachineState.FETCHING -> "正在获取手环"
                 BraceletMachineManager.MachineState.IN_CHECK_SELF -> "正在自检中"
                 BraceletMachineManager.MachineState.IN_GIVE_BACK -> "正在归还手环"

@@ -14,6 +14,7 @@ import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.utils.AppHelper
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.dialog.SetupNumDialog
+import com.ren_chaung.easy_bracelet.view.dialog.SetupTwoNumDialog
 import kotlinx.android.synthetic.main.activity_base_fragment.ivBack
 import kotlinx.android.synthetic.main.activity_setting.*
 
@@ -139,7 +140,14 @@ class SettingActivity : BaseFragmentActivity() {
         }
 
         buttonSetNum.setOnSingleClickListener {
-            SetupNumDialog.create(this).show()
+            when(BraceletMachineManager.deviceType) {
+                BraceletMachineManager.DeviceType.Normal -> {
+                    SetupNumDialog.create(this).show()
+                }
+                BraceletMachineManager.DeviceType.TwoFetch -> {
+                    SetupTwoNumDialog.create(this).show()
+                }
+            }
         }
 
         buttonOpenBack.setOnSingleClickListener {

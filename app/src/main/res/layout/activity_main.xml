@@ -34,5 +34,55 @@
             android:textColor="@color/blue4"
             android:textSize="32sp" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layoutTwoFetchNumber"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/layoutNumber1"
+            android:background="@mipmap/bg_number"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="164dp"
+            android:layout_height="164dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="机器1剩余"
+                android:textColor="@color/text3"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvNumber1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120"
+                android:textColor="@color/blue4"
+                android:textSize="32sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginStart="16dp"
+            android:id="@+id/layoutNumber2"
+            android:background="@mipmap/bg_number"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="164dp"
+            android:layout_height="164dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="机器2剩余"
+                android:textColor="@color/text3"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvNumber2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120"
+                android:textColor="@color/blue4"
+                android:textSize="32sp" />
+        </LinearLayout>
 
+    </LinearLayout>
 </LinearLayout>

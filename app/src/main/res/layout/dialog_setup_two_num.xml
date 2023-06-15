@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_bg1_radius4"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="数量配置"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/text1"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="机器1剩余（最多120）"
+        android:textColor="@color/text2"
+        android:lineSpacingExtra="12dp"
+        android:textSize="16sp"
+        android:layout_marginTop="32dp"
+        />
+    <EditText android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/etNum1"
+        android:text="120"
+        android:textColor="@color/text1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:textSize="18sp"
+        android:inputType="number"
+        android:singleLine="true"
+        android:maxLength="3"
+        android:background="@drawable/bg_edittext_selector"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="机器2剩余（最多120）"
+        android:textColor="@color/text2"
+        android:lineSpacingExtra="12dp"
+        android:textSize="16sp"
+        android:layout_marginTop="32dp"
+        />
+    <EditText android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/etNum2"
+        android:text="120"
+        android:textColor="@color/text1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:textSize="18sp"
+        android:inputType="number"
+        android:singleLine="true"
+        android:maxLength="3"
+        android:background="@drawable/bg_edittext_selector"/>
+
+    <LinearLayout
+        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/buttonCancel"
+            android:text="取消"
+            android:textColor="@color/text2"
+            android:textSize="18sp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/bg_white_text3_border_radius8"
+            android:layout_width="168dp"
+            android:layout_height="56dp"/>
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:text="保存"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:background="@drawable/bg_blue2_radius8"
+            android:layout_width="168dp"
+            android:layout_height="56dp"/>
+    </LinearLayout>
+
+</LinearLayout>
