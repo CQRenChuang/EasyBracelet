@@ -28,6 +28,7 @@ public class SerialPortHelper {
     public SerialPortHelper(String serialName, Context c, MachineInterface mi){
         this.contextReference = new WeakReference<>(c);
         this.machineInterface = mi;
+        this.serialName = serialName;
     }
 
     public SerialPortHelper(Context c, MachineInterface mi){

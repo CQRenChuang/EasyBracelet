@@ -45,5 +45,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'cn.shorr:ez-serialport:0.1.0'
-    api "com.ocm.lib:floatLoger:1.0.5@aar"
+    implementation "com.dongxingx.lib:logger:1.0.4"
 }

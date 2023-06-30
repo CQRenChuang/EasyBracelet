@@ -1,6 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ocm.bracelet_machine_sdk">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ocm.bracelet_machine_sdk">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <application>
+        <service android:enabled="true"
+            android:name="floatwindow.xishuang.float_lib.service.FloatMonkService" >
+        </service>
+
+    </application>
 </manifest>

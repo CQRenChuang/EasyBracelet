@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.provider.Settings
+import com.dongxingx.logger.LoggerHelper
+import com.dongxingx.logger.extension.showToast
+import com.dongxingx.logger.network.LoggerApi
+import com.dongxingx.logger.utils.DateHelper
 import com.ocm.bracelet_machine_sdk.Machine.MachineInterface
 import com.ocm.bracelet_machine_sdk.Machine.RobotData
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
@@ -30,6 +34,21 @@ object BraceletMachineManager: RobotInterface {
 
     internal enum class MachineState {
         IDLE, IN_CHECK_SELF, FETCHING, IN_GIVE_BACK, IN_SINGLE_GIVE_BACK, TEST
+    }
+
+    interface UploadLogCallback {
+
+        /**
+         * 上传成功
+         * @param url String 日志地址
+         */
+        fun onSuccess(url: String) {}
+
+        /**
+         * 上传失败
+         * @param msg String 失败原因
+         */
+        fun onFail(msg: String) {}
     }
 
     /**
@@ -196,7 +215,7 @@ object BraceletMachineManager: RobotInterface {
     private var sysListener: BraceletMachineSystemListener? = null
     var contextReference: WeakReference<Context>? = null
 
-    internal var serialPortHelper: com.ocm.bracelet_machine_sdk.Machine.SerialPortHelper? = null
+    internal var serialPortHelper: SerialPortHelper? = null
 
     private val testProcessor = TestProcessor()
     private val initProcessor = InitProcessor()
@@ -208,7 +227,7 @@ object BraceletMachineManager: RobotInterface {
     internal var machineState = MachineState.IDLE
     internal var isSyspush = false
     private val handler = Handler()
-    private var uploadLogTimer: Timer? = null
+    private var lastUploadLogTime = 0L
     var robotListener: RobotInterface? = null
 
     /**
@@ -256,11 +275,16 @@ object BraceletMachineManager: RobotInterface {
      */
     fun bind(context: Context) {
         LocalLogger.isDebug = true
+        LoggerHelper.setup(context)
+        LoggerApi.qywxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8ed677b2-691e-41c0-af5b-49fb6d7f1d65"
         loadData(context)
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
         serialPortHelper?.close()
-        serialPortHelper = SerialPortHelper(if(BuildConfig.DEBUG) "/dev/ttyS3" else "/dev/ttyS0",
+//        val port = "/dev/ttyS3"
+        val port = "/dev/ttyS0"
+
+        serialPortHelper = SerialPortHelper(port,
             context,
             object : MachineInterface {
                 override fun onConnect() {
@@ -286,26 +310,23 @@ object BraceletMachineManager: RobotInterface {
         }
         setupRobotListener()
         serialPortHelper?.Connect()
-        try {
-            FloatLoger.getInstance().stopServer(context)
-
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        try {
-            FloatLoger.ShowFloat = false
-            FloatLoger.setSize(500*1024)
-            FloatLoger.getInstance().startServer(context)
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        try {
-            FloatLoger.getInstance().clearOutLog(5)
-            FloatLoger.getInstance().hide()
-        }catch (e: Throwable) {
-            e.printStackTrace()
-        }
         BraceletManager2.bind(context)
+    }
+
+    fun uploadLog(callback: UploadLogCallback) {
+        val now = System.currentTimeMillis()
+        if (now - lastUploadLogTime < 120000) {
+            callback.onFail("调用频繁，请稍后重试")
+            return
+        }
+        LoggerHelper.upload("手环机SDK"+BraceletManager2.versionDefine, DateHelper.getDateTime(Date(), "yyyyMMdd")) {
+            it.onSuccess { url ->
+                callback.onSuccess(url)
+            }
+            it.onFailure { ex ->
+                callback.onFail(ex.message ?: "上传失败")
+            }
+        }
     }
 
     @SuppressLint("HardwareIds")

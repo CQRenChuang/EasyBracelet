@@ -2,7 +2,6 @@ package com.ocm.bracelet_machine_sdk.utils
 
 import android.util.Log
 import com.ocm.bracelet_machine_sdk.BraceletManager2
-import floatwindow.xishuang.float_lib.BuildConfig
 import floatwindow.xishuang.float_lib.FloatLoger
 
 object LocalLogger {

@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp" >
         <TextView
-            android:text="取手环1"
+            android:text="1号机取手环"
             android:textSize="32sp"
             android:layout_weight="1"
             android:textColor="@color/white"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp" >
         <TextView
-            android:text="取手环2"
+            android:text="2号机取手环"
             android:textSize="32sp"
             android:layout_weight="1"
             android:textColor="@color/white"

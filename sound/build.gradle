@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 android {
     compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
@@ -31,7 +31,7 @@ dependencies {
 
 //    implementation project(":${BASE_NAME}")
 //    implementation project(":${LOG_NAME}")
-    implementation "com.ocm.lib:ocmlogger:1.0.3@aar"
+    api "com.dongxingx.lib:logger:1.0.4"
 }
 
 

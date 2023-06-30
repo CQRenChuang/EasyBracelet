@@ -66,7 +66,7 @@ class InitFragment : BaseFragment() {
     }
 
     private fun checkNo1() {
-        view?.tvState?.text = "自检手环机1"
+        view?.tvState?.text = "自检1号机"
         BraceletManager2.checkSelf(0, object : CheckSelfCallback {
             override fun onCheckSelfFail(msg: String) {
                 view?.tvState?.text = msg
@@ -84,7 +84,7 @@ class InitFragment : BaseFragment() {
     }
 
     private fun checkNo2() {
-        view?.tvState?.text = "自检手环机2"
+        view?.tvState?.text = "自检2号机"
         BraceletManager2.checkSelf(1, object : CheckSelfCallback {
             override fun onCheckSelfFail(msg: String) {
                 view?.tvState?.text = msg

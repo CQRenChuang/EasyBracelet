@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="机器1剩余"
+                android:text="1号机剩余"
                 android:textColor="@color/text3"
                 android:textSize="14sp" />
             <TextView
@@ -72,7 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="机器2剩余"
+                android:text="2号机剩余"
                 android:textColor="@color/text3"
                 android:textSize="14sp" />
             <TextView

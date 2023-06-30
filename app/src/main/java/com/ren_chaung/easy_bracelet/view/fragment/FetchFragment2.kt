@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_fetch.view.*
 class FetchFragment2(private val addrIndex: Int) : BaseFragment(), FetchCallback {
 
     private var canGoBack = false
+    private var isStop = false
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +49,9 @@ class FetchFragment2(private val addrIndex: Int) : BaseFragment(), FetchCallback
     }
 
     override fun onCompleted() {
-        SoundHelper.endFetch()
+        if(!isStop) {
+            SoundHelper.endFetch()
+        }
         canGoBack = true
         popFragment()
     }
@@ -66,6 +69,7 @@ class FetchFragment2(private val addrIndex: Int) : BaseFragment(), FetchCallback
     }
 
     override fun onStopBack() {
+        isStop = true
         canGoBack = true
         popFragment()
     }

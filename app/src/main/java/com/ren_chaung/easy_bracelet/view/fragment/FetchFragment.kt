@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_fetch.view.*
 class FetchFragment : BaseFragment(), FetchCallback {
 
     private var canGoBack = false
+    private var isStop = false
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +52,9 @@ class FetchFragment : BaseFragment(), FetchCallback {
     }
 
     override fun onCompleted() {
-        SoundHelper.endFetch()
+        if(!isStop) {
+            SoundHelper.endFetch()
+        }
         canGoBack = true
         popFragment()
     }
@@ -64,12 +67,14 @@ class FetchFragment : BaseFragment(), FetchCallback {
         }
         context?.let { ResultTipsDialog.Builder(it, ResultTipsDialog.Builder.State.ERROR, msg).create().show{
             canGoBack = true
+            isStop = true
             popFragment()
         } }
     }
 
     override fun onStopBack() {
         canGoBack = true
+        isStop = true
         popFragment()
     }
 

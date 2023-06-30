@@ -5,7 +5,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.util.Log
-import com.ocm.ocmlogger.OCMLogger
+import com.dongxingx.logger.LoggerHelper
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -127,6 +127,7 @@ object SoundHelper {
     }
 
     fun writeLog(msg: String) {
-        OCMLogger.write(msg)
+        LoggerHelper.write(msg)
+
     }
 }

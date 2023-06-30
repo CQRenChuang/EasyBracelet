@@ -85,6 +85,18 @@ class SettingActivity : BaseFragmentActivity() {
 
         }
 
+        buttonUploadLog.setOnClickListener {
+            BraceletMachineManager.uploadLog(object : BraceletMachineManager.UploadLogCallback {
+                override fun onSuccess(url: String) {
+                    showToast("日志上传成功: $url")
+                }
+
+                override fun onFail(msg: String) {
+                    showToast("上传失败: $msg")
+                }
+            })
+        }
+
 
         val spinnerDeviceItems = arrayOf("单台收发", "两台发放")
         val deviceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerDeviceItems)

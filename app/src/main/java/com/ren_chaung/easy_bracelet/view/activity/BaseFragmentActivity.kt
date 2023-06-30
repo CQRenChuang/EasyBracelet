@@ -14,19 +14,15 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.comocm.base.extension.showToast
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ren_chaung.easy_bracelet.BuildConfig
 import com.ren_chaung.easy_bracelet.R
 import com.ren_chaung.easy_bracelet.receiver.TimeTickReceiver
 import com.ren_chaung.easy_bracelet.utils.DateTimeHelper
-import com.ren_chaung.easy_bracelet.utils.LocalLogger
-import com.ren_chaung.easy_bracelet.utils.extension.setOnMultiClickListener
 import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.fragment.BaseFragment
-import com.tencent.bugly.beta.Beta
 import kotlinx.android.synthetic.main.activity_base_fragment.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -120,13 +116,13 @@ open class BaseFragmentActivity: FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (!checkPermission()) {
+            requestPermission()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-//        if (!checkPermission()) {
-//            requestPermission()
-//        }
     }
 
     override fun onDestroy() {
@@ -219,14 +215,7 @@ open class BaseFragmentActivity: FragmentActivity() {
     }
 
     //权限
-    fun checkPermission(): Boolean {
-        return true
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED) {
-            return false
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !== PackageManager.PERMISSION_GRANTED) {
-            return false
-        }
+    private fun checkPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -234,14 +223,6 @@ open class BaseFragmentActivity: FragmentActivity() {
     }
 
     private fun requestPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 2)
-            return
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !== PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), 4)
-            return
-        }
         if (ContextCompat.checkSelfPermission(
                         this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE

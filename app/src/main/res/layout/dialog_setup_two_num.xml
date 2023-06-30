@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="机器1剩余（最多120）"
+        android:text="1号机剩余（最多120）"
         android:textColor="@color/text2"
         android:lineSpacingExtra="12dp"
         android:textSize="16sp"
@@ -44,7 +44,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="机器2剩余（最多120）"
+        android:text="2号机剩余（最多120）"
         android:textColor="@color/text2"
         android:lineSpacingExtra="12dp"
         android:textSize="16sp"

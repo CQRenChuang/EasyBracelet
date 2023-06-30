@@ -4,7 +4,6 @@ import android.app.Application
 import com.comocm.sound.SoundHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ren_chaung.easy_bracelet.utils.CrashHandler
-import com.ren_chaung.easy_bracelet.utils.LocalLogger
 import com.tencent.bugly.Bugly
 import com.tencent.bugly.beta.Beta
 
@@ -19,8 +18,6 @@ class EBApplication : Application() {
         Beta.initDelay = 0
         CrashHandler.init(this)
         //BraceletMachineManager.isDebug = BuildConfig.DEBUG
-        LocalLogger.isDebug = true
-        LocalLogger.version = BuildConfig.VERSION_NAME
         SoundHelper.loadSound(this)
         BraceletMachineManager.bind(this)
     }
