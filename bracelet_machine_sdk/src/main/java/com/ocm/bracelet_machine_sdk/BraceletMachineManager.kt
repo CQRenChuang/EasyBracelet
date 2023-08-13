@@ -281,8 +281,8 @@ object BraceletMachineManager: RobotInterface {
         fetchProcessor = FetchProcessor(context)
         contextReference = WeakReference(context)
         serialPortHelper?.close()
-//        val port = "/dev/ttyS3"
-        val port = "/dev/ttyS0"
+        val port = "/dev/ttyS3"
+//        val port = "/dev/ttyS0"
 
         serialPortHelper = SerialPortHelper(port,
             context,

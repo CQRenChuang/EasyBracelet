@@ -20,7 +20,7 @@ internal class GiveBackProcessor: BaseProcessor() {
     private var giveBackTimerCount = 0
     private var listener: com.ocm.bracelet_machine_sdk.GiveBackCallback? = null
     val backOpt = OptModel()
-    var timeout = 10 //归还超时限定
+    var timeout = 20 //归还超时限定
     private var isSending = false
     private var isStop = false
 
