@@ -1,7 +1,7 @@
 package com.ocm.bracelet_machine_sdk.utils
 
 import android.util.Log
-import com.ocm.bracelet_machine_sdk.BraceletManager2
+import com.ocm.bracelet_machine_sdk.BuildConfig
 import floatwindow.xishuang.float_lib.FloatLoger
 
 object LocalLogger {
@@ -9,6 +9,6 @@ object LocalLogger {
 
     fun write(msg: String) {
         if(isDebug) Log.d("Local-Logger", msg)
-        FloatLoger.getInstance().writeLog("${BraceletManager2.versionDefine} - $msg")
+        FloatLoger.getInstance().writeLog("${BuildConfig.VERSION_NAME} - $msg")
     }
 }
