@@ -22,6 +22,7 @@ import com.ren_chaung.easy_bracelet.utils.extension.setOnSingleClickListener
 import com.ren_chaung.easy_bracelet.view.dialog.SetupNumDialog
 import com.ren_chaung.easy_bracelet.view.dialog.SetupTwoNumDialog
 import com.ren_chaung.easy_bracelet.view.fragment.FetchFragment
+import com.ren_chaung.easy_bracelet.view.fragment.FetchFragment2
 import com.ren_chaung.easy_bracelet.view.fragment.InitFragment
 import com.ren_chaung.easy_bracelet.view.fragment.MainFragment
 import com.ren_chaung.easy_bracelet.view.fragment.MainFragment2
@@ -39,6 +40,7 @@ import kotlinx.android.synthetic.main.activity_main.tvNumber2
 
 class MainActivity : BaseFragmentActivity() {
     private var isInitSuccess = false
+
     //NFC
     private var mAdapter: NfcAdapter? = null
     private var mPendingIntent: PendingIntent? = null
@@ -53,10 +55,11 @@ class MainActivity : BaseFragmentActivity() {
         replaceFragment(InitFragment.newInstance(object : InitFragment.InitFragmentListener {
             override fun initSuccess() {
                 isInitSuccess = true
-                when(BraceletMachineManager.deviceType) {
+                when (BraceletMachineManager.deviceType) {
                     BraceletMachineManager.DeviceType.Normal -> {
                         replaceFragment(MainFragment(), FragmentAnimateType.FADE)
                     }
+
                     BraceletMachineManager.DeviceType.TwoFetch -> {
                         replaceFragment(MainFragment2(), FragmentAnimateType.FADE)
                     }
@@ -108,10 +111,11 @@ class MainActivity : BaseFragmentActivity() {
     }
 
     private fun setupNum() {
-        when(BraceletMachineManager.deviceType) {
+        when (BraceletMachineManager.deviceType) {
             BraceletMachineManager.DeviceType.Normal -> {
                 SetupNumDialog.create(this).show()
             }
+
             BraceletMachineManager.DeviceType.TwoFetch -> {
                 SetupTwoNumDialog.create(this).show()
             }
@@ -121,11 +125,12 @@ class MainActivity : BaseFragmentActivity() {
     override fun onResume() {
         super.onResume()
 //        mAdapter?.enableForegroundDispatch(this, mPendingIntent, null, null)
-        when(BraceletMachineManager.deviceType) {
+        when (BraceletMachineManager.deviceType) {
             BraceletMachineManager.DeviceType.Normal -> {
                 layoutNumber.visibility = View.VISIBLE
                 layoutTwoFetchNumber.visibility = View.GONE
             }
+
             BraceletMachineManager.DeviceType.TwoFetch -> {
                 layoutNumber.visibility = View.GONE
                 layoutTwoFetchNumber.visibility = View.VISIBLE
@@ -168,11 +173,29 @@ class MainActivity : BaseFragmentActivity() {
         mAdapter?.enableForegroundDispatch(this, mPendingIntent, null, null)
         NFCHelper.listener = object : NFCHelper.NFCListener {
             override fun onNFCReadSuccess(cardNo10D: String, blockContent: String?) {
-                if (BraceletMachineManager.enableNFCFetch && fragments.size == 1)
-                    push(FetchFragment())
+                if (BraceletMachineManager.enableNFCFetch && fragments.size == 1) {
+                    fetch()
+                }
             }
         }
         NFCHelper.openZHRFID()
+    }
+
+    private fun fetch() {
+        if (BraceletMachineManager.deviceType == BraceletMachineManager.DeviceType.Normal) {
+            push(FetchFragment())
+        } else {
+            if (BraceletMachineManager.checkSelfNo1 && !BraceletMachineManager.checkSelfNo2) {
+                push(FetchFragment2(0))
+            }
+            if (!BraceletMachineManager.checkSelfNo1 && BraceletMachineManager.checkSelfNo2) {
+                push(FetchFragment2(1))
+            }
+            if (BraceletMachineManager.checkSelfNo1 && BraceletMachineManager.checkSelfNo2) {
+                val index = (0..1).random()
+                push(FetchFragment2(index))
+            }
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -189,7 +212,9 @@ class MainActivity : BaseFragmentActivity() {
             qrCode = ""
             return false
         }
-        if ((keyValue < 32 || keyValue > 126)) { return false }
+        if ((keyValue < 32 || keyValue > 126)) {
+            return false
+        }
         qrCode = "$qrCode${keyValue.toChar()}"
         return false
     }
@@ -213,6 +238,6 @@ class MainActivity : BaseFragmentActivity() {
             return
         }
         toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 300)
-        push(FetchFragment())
+        fetch()
     }
 }
