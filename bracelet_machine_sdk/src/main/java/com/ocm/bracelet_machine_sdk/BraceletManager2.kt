@@ -64,7 +64,7 @@ object BraceletManager2 {
      * 绑定context
      * @param context Context
      */
-    fun bind(context: Context) {
+    internal fun bind(context: Context) {
         LocalLogger.isDebug = true
         fetchProcessorList = arrayOf(FetchProcessor(context, 0), FetchProcessor(context, 1))
         contextReference = WeakReference(context)

@@ -174,7 +174,7 @@ object BraceletMachineManager: RobotInterface {
         }?.apply()
     }
 
-    fun setDeviceType(type: DeviceType) {
+    internal fun setDeviceType(type: DeviceType) {
         deviceType = type
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putString(deviceTypeKey, type.name)
@@ -273,16 +273,17 @@ object BraceletMachineManager: RobotInterface {
      * 绑定context
      * @param context Context
      */
-    fun bind(context: Context) {
+    fun bind(context: Context, type: DeviceType) {
+        contextReference = WeakReference(context)
+        loadData(context)
         LocalLogger.isDebug = true
         LoggerHelper.setup(context)
         LoggerApi.qywxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8ed677b2-691e-41c0-af5b-49fb6d7f1d65"
-        loadData(context)
+        setDeviceType(type)
         fetchProcessor = FetchProcessor(context)
-        contextReference = WeakReference(context)
         serialPortHelper?.close()
-        val port = if(deviceType == DeviceType.Normal) "/dev/ttyS3" else "/dev/ttyS0"
-
+        val port = if(type == DeviceType.Normal) "/dev/ttyS3" else "/dev/ttyS0"
+        LoggerHelper.write("绑定端口 port: $port, dev-type: $type")
         serialPortHelper = SerialPortHelper(port,
             context,
             object : MachineInterface {
@@ -296,7 +297,7 @@ object BraceletMachineManager: RobotInterface {
         //手环数量回调
         BraceletNumberManager.listener = object : BraceletNumberManager.BraceletNumberManagerListener {
             override fun onCurrentNumChange(num: Int) {
-                    listener?.onCurrentNumChange(num)
+                listener?.onCurrentNumChange(num)
             }
 
             override fun onNoBracelet() {
@@ -310,6 +311,10 @@ object BraceletMachineManager: RobotInterface {
         setupRobotListener()
         serialPortHelper?.Connect()
         BraceletManager2.bind(context)
+    }
+
+    fun bind(context: Context) {
+        bind(context, deviceType)
     }
 
     fun uploadLog(callback: UploadLogCallback) {
