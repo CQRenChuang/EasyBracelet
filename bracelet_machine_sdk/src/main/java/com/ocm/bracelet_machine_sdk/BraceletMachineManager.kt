@@ -174,7 +174,7 @@ object BraceletMachineManager: RobotInterface {
         }?.apply()
     }
 
-    internal fun setDeviceType(type: DeviceType) {
+    fun setDeviceType(type: DeviceType) {
         deviceType = type
         BraceletNumberManager.sharedPreferences?.edit()?.apply {
             putString(deviceTypeKey, type.name)
@@ -258,8 +258,8 @@ object BraceletMachineManager: RobotInterface {
         BraceletNumberManager.sharedPreferences?.apply {
             val isID = getBoolean(cardTypeIsIDKey, false)
             cardType = if(isID) CardType.ID else CardType.IC
-            enableQRFetch = getBoolean(enableQRFetchKey, false)
-            enableNFCFetch = getBoolean(enableNFCFetchKey, false)
+            enableQRFetch = getBoolean(enableQRFetchKey, true)
+            enableNFCFetch = getBoolean(enableNFCFetchKey, true)
             enableCalc = getBoolean(enableCalcKey, true)
             enableAutoRun = getBoolean(enableAutoRunKey, false)
             fetchNum = getInt(fetchNumKey, 1)
@@ -481,7 +481,7 @@ object BraceletMachineManager: RobotInterface {
 
     //操作处理结束
     fun processDone() {
-        LocalLogger.write("状态重置")
+        LocalLogger.write("processDone 状态重置")
         fetchProcessor.destory()
         machineState = MachineState.IDLE
     }

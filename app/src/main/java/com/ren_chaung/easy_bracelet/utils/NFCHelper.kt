@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.Log
 import com.example.zh_idreader.IDReader
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
+import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import kotlin.collections.ArrayList
 
 object NFCHelper {
@@ -26,8 +27,7 @@ object NFCHelper {
 
             try {
                 if (BraceletMachineManager.enableNFCFetch) {
-                    val blockStr = decodeSector(tagFromIntent)
-                    listener?.onNFCReadSuccess(cardno, blockStr)
+                    listener?.onNFCReadSuccess(cardno, "")
                     return
                 }
             } catch (ex: Exception) {
@@ -56,33 +56,6 @@ object NFCHelper {
         }
 
         return String(cardChar)
-    }
-
-    /**
-     * 黄龙呼啦网络读卡方法
-     * @param tag Tag
-     */
-    private fun decodeSector(tag: Tag): String {
-//        val mc = MifareClassic.get(tag)
-//        try {
-//            mc.connect()
-//            val pwd = StringHelper.hexStringToBytes(EquipmentManager.appConfig?.nfc_reader?.psw ?: "")
-//            val auth = mc.authenticateSectorWithKeyA(EquipmentManager.appConfig?.nfc_reader?.sector ?: 1, pwd)
-//            if (!auth) Throwable("验证失败")
-//            try {
-//                val datas = mc.readBlock(EquipmentManager.appConfig?.nfc_reader?.block ?: 1)
-//                val blockStr = StringHelper.bytesToHexFun3(datas)
-//                Log.e(TAG, "块： ${EquipmentManager.appConfig?.nfc_reader?.block}， 块内容：$blockStr")
-//                return blockStr
-//            } catch (ex: Exception) {
-//                OCMLogger.write("读扇区失败 $ex，块： ${EquipmentManager.appConfig?.nfc_reader?.block}")
-//            }
-//        } catch (ex: Exception) {
-//            Log.e(TAG, "操作异常 $ex")
-//        } finally {
-//            mc.close()
-//        }
-        return ""
     }
 
     fun closeZHRFID() {
@@ -136,7 +109,7 @@ object NFCHelper {
                                 .toByteArray()))
                         cardNo10D = java.lang.Long.parseLong(cardNo10D, 16).toString()
                         while (cardNo10D.length < 10) cardNo10D = "0$cardNo10D"
-                        Log.d("dxx", "cardNo10D: $cardNo10D")
+                        LocalLogger.write("读到NFC卡 cardNo10D: $cardNo10D")
                         Log.d("dxx",
                             "read: ${StringHelper.bytesToHexFun3(ActivityArray0.map { it.toByte() }
                                 .toByteArray())}"
