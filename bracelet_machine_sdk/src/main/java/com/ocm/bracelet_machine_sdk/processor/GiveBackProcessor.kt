@@ -79,6 +79,10 @@ internal class GiveBackProcessor: BaseProcessor() {
         }
     }
 
+    fun destory() {
+        listener = null
+    }
+
     private fun stopBack() {
         handler.post {
             LocalLogger.write("调用 stopBack")

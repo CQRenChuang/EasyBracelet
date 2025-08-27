@@ -21,7 +21,7 @@ import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 internal class SingleGiveBackProcessor: BaseProcessor() {
     private val handler = Handler()
     private var callback: AllowGiveBackCallback? = null
-    private var listener: WRGiveBackCallback? = null
+    var listener: WRGiveBackCallback? = null
 //    private val backOpt = OptModel()
 
     fun start() {
@@ -95,13 +95,21 @@ internal class SingleGiveBackProcessor: BaseProcessor() {
             }
             RobotMsg.ReciveSuccess -> {
                 serialPortHelper?.setReciveNotify(false)
-                BraceletMachineManager.processDone()
                 BraceletNumberManager.addCurrentNum()
                 callback?.onSuccess()
-                callback?.onCompleted()
+                BraceletMachineManager.processDone()
                 stop()
             }
             RobotMsg.ReciveSendRoll -> {
+                serialPortHelper?.setReciveNotify(false)
+                handler.post {
+                    BraceletMachineManager.processDone()
+                    listener?.onGiveBackFail("未读到卡号")
+                    listener?.onCompleted()
+                    callback?.onFail("未读到卡号")
+                    callback?.onCompleted()
+                }
+                stop()
             }
             RobotMsg.ReciveFail -> {
                 serialPortHelper?.setReciveNotify(false)

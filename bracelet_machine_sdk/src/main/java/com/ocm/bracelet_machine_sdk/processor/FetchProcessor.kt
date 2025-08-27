@@ -147,6 +147,7 @@ internal class FetchProcessor(context: Context) : BaseProcessor() {
         timer = null
         sendTimer?.cancel()
         sendTimer = null
+        listener = null
     }
 
     fun fetch(content: String? = null) {

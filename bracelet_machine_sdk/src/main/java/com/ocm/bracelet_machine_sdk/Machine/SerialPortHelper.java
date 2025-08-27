@@ -146,41 +146,43 @@ public class SerialPortHelper {
             }
             if (len > 0) {
                 try {
-                    if (runnableBuff != null) {
-                        handler.removeCallbacks(runnableBuff);
-                        runnableBuff = null;
-                    }
+//                    if (runnableBuff != null) {
+//                        handler.removeCallbacks(runnableBuff);
+//                        runnableBuff = null;
+//                    }
                     String read_string = toHexString(recv_buff, len);
                     writeLog(len + ",收到数据:" + read_string);
-                    System.arraycopy(recv_buff, 0, mRecvBuff, recv_len, len);
-                    recv_len += len;
-                    runnableBuff = () -> {
-                        try {
-                            byte[] buffer = new byte[recv_len];
-                            System.arraycopy(mRecvBuff, 0, buffer, 0, recv_len);
-                            String read_string1 = toHexString(buffer, recv_len);
-                            writeLog(recv_len + ",处理数据:" + read_string1);
-//                    if(IsSector(recv_buff)){
-//                        tmp_buff = new byte[recv_len];
-//                        System.arraycopy(recv_buff,0,tmp_buff,0,recv_len);
-//                    }else{
-                            if (RobotData.validCRC(buffer, recv_len)) {
-                                analyData(buffer, read_string1);
-                            } else {
-                                writeLog("校验失败");
-                            }
-                            recv_len = 0;
-//                    }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    };
-                    handler.postDelayed(runnableBuff, 100);
+                    analyData(recv_buff, read_string);
+//                    System.arraycopy(recv_buff, 0, mRecvBuff, recv_len, len);
+//                    recv_len += len;
+//                    runnableBuff = () -> {
+//                        try {
+//                            byte[] buffer = new byte[recv_len];
+//                            System.arraycopy(mRecvBuff, 0, buffer, 0, recv_len);
+//                            String read_string1 = toHexString(buffer, recv_len);
+//                            writeLog(recv_len + ",处理数据:" + read_string1);
+////                    if(IsSector(recv_buff)){
+////                        tmp_buff = new byte[recv_len];
+////                        System.arraycopy(recv_buff,0,tmp_buff,0,recv_len);
+////                    }else{
+//                            if (RobotData.validCRC(buffer, recv_len)) {
+//                                analyData(buffer, read_string1);
+//                            } else {
+//                                writeLog("校验失败");
+//                            }
+//                            recv_len = 0;
+////                    }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    };
+//                    handler.postDelayed(runnableBuff, 100);
 //                    read_string = toHexString(buff, buff.length);
 //                    writeLog(recv_len+",扇区数据合并:"+read_string);
 //                    analyData(buff,read_string);
 
                 } catch (Exception e) {
+                    writeLog("处理异常:" + e.getMessage());
                     e.printStackTrace();
                 }
             }

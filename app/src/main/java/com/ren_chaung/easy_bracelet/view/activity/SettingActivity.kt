@@ -111,8 +111,20 @@ class SettingActivity : BaseFragmentActivity() {
                 position: Int,
                 id: Long
             ) {
-                BraceletMachineManager.setDeviceType(BraceletMachineManager.DeviceType.values()[position])
-                refreshLayout()
+                AlertDialog.Builder(this@SettingActivity).apply {
+                    setTitle("提示")
+                    setMessage("需要重启才能配置生效")
+                    setPositiveButton("立即重启"
+                    ) { dialog, which ->
+                        BraceletMachineManager.setDeviceType(BraceletMachineManager.DeviceType.values()[position])
+                        AppHelper.restartApp(context)
+                    }
+                    setNegativeButton("取消设置") { dialog, which ->
+                    }
+
+                }.create().apply {
+                    setCanceledOnTouchOutside(false)
+                }.show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

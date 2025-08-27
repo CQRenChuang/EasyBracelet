@@ -269,11 +269,15 @@ object BraceletMachineManager: RobotInterface {
         }
     }
 
+    fun bind(context: Context, type: DeviceType) {
+        bind(context, type, "")
+    }
+
     /**
      * 绑定context
      * @param context Context
      */
-    fun bind(context: Context, type: DeviceType) {
+    fun bind(context: Context, type: DeviceType, bindPort: String) {
         contextReference = WeakReference(context)
         loadData(context)
         LocalLogger.isDebug = true
@@ -282,7 +286,10 @@ object BraceletMachineManager: RobotInterface {
         setDeviceType(type)
         fetchProcessor = FetchProcessor(context)
         serialPortHelper?.close()
-        val port = if(type == DeviceType.Normal) "/dev/ttyS3" else "/dev/ttyS0"
+        var port = bindPort
+        if (port.isEmpty()) {
+            port = if(type == DeviceType.Normal) "/dev/ttyS3" else "/dev/ttyS0"
+        }
         LoggerHelper.write("绑定端口 port: $port, dev-type: $type")
         serialPortHelper = SerialPortHelper(port,
             context,
@@ -481,9 +488,14 @@ object BraceletMachineManager: RobotInterface {
 
     //操作处理结束
     fun processDone() {
-        LocalLogger.write("processDone 状态重置")
-        fetchProcessor.destory()
         machineState = MachineState.IDLE
+        LocalLogger.write("processDone 状态重置")
+    }
+
+    fun destoryProcessor() {
+        singleGiveBackProcessor.destory()
+        fetchProcessor.destory()
+        givebackProcessor.destory()
     }
 
     fun destoryGiveBack() {

@@ -13,8 +13,8 @@ android {
         applicationId "com.ren_chaung.easy_bracelet"
         minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
         targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION as int
-        versionCode 14
-        versionName "1.2.5"
+        versionCode 16
+        versionName "1.2.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
