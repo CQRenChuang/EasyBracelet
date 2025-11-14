@@ -7,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.comocm.base.extension.showToast
 import com.comocm.base.extension.startNewActivity
+import com.dongxingx.logger.utils.CMDHelper
 import com.ocm.bracelet_machine_sdk.BraceletMachineManager
 import com.ocm.bracelet_machine_sdk.BraceletMachineSystemListener
 import com.ocm.bracelet_machine_sdk.BraceletManager2
@@ -47,7 +48,7 @@ class SettingActivity : BaseFragmentActivity() {
                     setPositiveButton("立即重启"
                     ) { dialog, which ->
                         BraceletMachineManager.setCardType(if(position == 0) BraceletMachineManager.CardType.IC else BraceletMachineManager.CardType.ID)
-                        AppHelper.restartApp(context)
+                        CMDHelper.reboot()
                     }
                     setNegativeButton("取消设置") { dialog, which ->
                         spinnerCardType.setSelection(if(BraceletMachineManager.isIC()) 0 else 1)
@@ -111,13 +112,15 @@ class SettingActivity : BaseFragmentActivity() {
                 position: Int,
                 id: Long
             ) {
+                val oldPosition2 = BraceletMachineManager.DeviceType.values().indexOf(BraceletMachineManager.deviceType)
+                if (oldPosition2 == position) return
                 AlertDialog.Builder(this@SettingActivity).apply {
                     setTitle("提示")
                     setMessage("需要重启才能配置生效")
                     setPositiveButton("立即重启"
                     ) { dialog, which ->
                         BraceletMachineManager.setDeviceType(BraceletMachineManager.DeviceType.values()[position])
-                        AppHelper.restartApp(context)
+                        CMDHelper.reboot()
                     }
                     setNegativeButton("取消设置") { dialog, which ->
                     }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="passblack">#aa000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white" tools:ignore="MissingDefaultResource">#fff</color>
+    <color name="black50">#80000000</color>
+    <color name="black80">#CC000000</color>
+</resources>

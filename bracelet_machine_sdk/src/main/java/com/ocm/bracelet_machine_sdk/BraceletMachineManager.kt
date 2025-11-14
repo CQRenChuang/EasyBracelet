@@ -5,14 +5,11 @@ import android.content.Context
 import android.os.Handler
 import android.provider.Settings
 import com.dongxingx.logger.LoggerHelper
-import com.dongxingx.logger.extension.showToast
-import com.dongxingx.logger.network.LoggerApi
 import com.dongxingx.logger.utils.DateHelper
 import com.ocm.bracelet_machine_sdk.Machine.MachineInterface
 import com.ocm.bracelet_machine_sdk.Machine.RobotData
 import com.ocm.bracelet_machine_sdk.Machine.RobotInterface
 import com.ocm.bracelet_machine_sdk.Machine.SerialPortHelper
-import com.ocm.bracelet_machine_sdk.processor.*
 import com.ocm.bracelet_machine_sdk.processor.FetchProcessor
 import com.ocm.bracelet_machine_sdk.processor.GiveBackProcessor
 import com.ocm.bracelet_machine_sdk.processor.InitProcessor
@@ -20,7 +17,6 @@ import com.ocm.bracelet_machine_sdk.processor.SingleGiveBackProcessor
 import com.ocm.bracelet_machine_sdk.processor.TestProcessor
 import com.ocm.bracelet_machine_sdk.utils.LocalLogger
 import com.ocm.smartrobot.utils.GPIOHelper
-import floatwindow.xishuang.float_lib.FloatLoger
 import java.lang.ref.WeakReference
 import java.net.NetworkInterface
 import java.util.*
@@ -282,7 +278,6 @@ object BraceletMachineManager: RobotInterface {
         loadData(context)
         LocalLogger.isDebug = true
         LoggerHelper.setup(context)
-        LoggerApi.qywxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8ed677b2-691e-41c0-af5b-49fb6d7f1d65"
         setDeviceType(type)
         fetchProcessor = FetchProcessor(context)
         serialPortHelper?.close()
@@ -321,6 +316,7 @@ object BraceletMachineManager: RobotInterface {
     }
 
     fun bind(context: Context) {
+        loadData(context)
         bind(context, deviceType)
     }
 

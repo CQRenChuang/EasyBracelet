@@ -20,10 +20,6 @@ allprojects {
         mavenLocal()
         google()
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-        maven {
-            allowInsecureProtocol = true
-            url 'http://maven.xiaoliyun.com:9999/repository/sdk/'
-        }
     }
 }
 

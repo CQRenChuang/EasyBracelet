@@ -3,4 +3,5 @@
     <string name="cmd_send_fail">指令发送失败</string>
     <string name="error_robot">设备异常 请联系管理员</string>
     <string name="error_brand">手环异常请勿使用</string>
+    <string name="title_activity_look_log">LookLogActivity</string>
 </resources>

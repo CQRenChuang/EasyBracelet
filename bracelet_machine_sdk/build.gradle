@@ -48,7 +48,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'cn.shorr:ez-serialport:0.1.0'
-    implementation "com.dongxingx.lib:logger:1.0.12"
 }
 
 afterEvaluate {
